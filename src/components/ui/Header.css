@@ -1,0 +1,102 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgb(131, 131, 131);
+  }
+  
+  .navbar {
+    padding: 5px 0px;
+  }
+  .header__small {
+    background-color: #eeeeee;
+    max-height: 25px;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .header__small > div {
+    min-width: 300px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .header__small1 {
+    justify-content: flex-start;
+  }
+  
+  .header__small2 {
+    justify-content: flex-end;
+  }
+  
+  .header__small > div > p {
+    padding: 4px 0px;
+    font-size: 11px;
+    padding-right: 20px;
+  }
+  
+  .navbar-logo {
+    max-width: 120px;
+    max-height: 52px;
+    object-fit: contain;
+    margin-right: 40px;
+  }
+  
+  .nav-link {
+    padding-top: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .login {
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-left: 1px solid rgb(139, 139, 139);
+  }
+  
+  .login > p {
+    margin-bottom: 0px;
+  }
+  
+  .header__small1 > p > .MuiSvgIcon-root {
+    height: 16px;
+    width: 15px;
+  }
+  
+  .form-control:focus {
+    box-shadow: inset 0 -1px 0 #ddd;
+    border: 1px solid black;
+  }
+  
+  @media only screen and (min-width: 520px) {
+    .navbar {
+      padding-left: 150px !important;
+      padding-right: 150px !important;
+    }
+  
+    .header__small {
+      justify-content: space-between;
+      padding-left: 150px;
+      padding-right: 150px;
+    }
+    .form-control {
+      padding: 18px;
+      font-size: smaller;
+      min-width: 300px;
+      background-color: #eeeeee;
+    }
+  }
+  
+  @media only screen and (max-width: 520px) {
+    .navbar {
+      margin-left: 10px !important;
+      margin-right: 10px !important;
+    }
+    .header__small {
+      display: none;
+    }
+    .login {
+      border: 0px;
+      padding: 5px 0px;
+    }
+  }
