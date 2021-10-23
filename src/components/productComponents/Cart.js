@@ -1,7 +1,10 @@
 import React ,{useState,useEffect,useContext} from 'react';
+import StripeCheckout from 'react-stripe-checkout';
+import axios from "axios";
+
 import { database } from '../../firebase';
 import styled from "styled-components";
-import { Grid, makeStyles, Typography,useTheme,useMediaQuery,Button ,TextField,MenuItem,InputLabel} from '@material-ui/core';
+import { Grid, makeStyles, Typography,useTheme,useMediaQuery,Button ,TextField,MenuItem,InputLabel, Dialog,DialogContent} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -10,6 +13,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { toast } from 'react-toastify';
 import { StateContext } from '../../context/StateContext';
+import { Link } from 'react-router-dom';
 // import database  from '../../firebase';
 
 const useStyles = makeStyles(theme=>({
@@ -52,6 +56,53 @@ const useStyles = makeStyles(theme=>({
         height: 38,
         width: 38,
     },
+    esitmate:{
+        ...theme.typography.estimate,
+        fontSize:'1.5rem',
+        backgroundColor:theme.palette.common.orange,
+        borderRadius:50,
+        height: 80,
+        width: 205,
+        marginRight:'5em',
+        marginLeft:'2em',
+        '&:hover':{
+            backgroundColor:theme.palette.secondary.light
+        },
+        [theme.breakpoints.down("md")]: {
+            marginLeft: 0,
+            marginRight: 0
+          }
+    },
+    learnButton: {
+        ...theme.typography.learnButton,
+        fontSize: "0.7rem",
+        height: 35,
+        padding: 5,
+        [theme.breakpoints.down("md")]: {
+          marginBottom: "2em"
+        }
+    },
+    message:{
+        border: `2px solid ${theme.palette.common.black}`,
+        marginTop:'5em',
+        borderRadius:5
+    },
+    sendButton:{
+        ...theme.typography.estimate,
+        borderRadius:50,
+        height:45,
+        width:245,
+        fontSize:'1rem',
+        backgroundColor:theme.palette.common.black,
+        "&:hover":{
+            backgroundColor:theme.palette.common.black.light
+        },
+        [theme.breakpoints.down("sm")]: {
+            height: 40,
+            width: 225,
+          }
+    }
+    
 }))
 export default function Cart(props){
     const classes = useStyles();
@@ -61,6 +112,7 @@ export default function Cart(props){
     const [sav, setSave] = useState(0)
     const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
     const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
+    const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
     const [docs, setDocs] = useState([]);
     const [quantity, setQuantity] = useState(1);
 
@@ -71,8 +123,35 @@ export default function Cart(props){
     const [cartSave,setcartSave] = cartsave;
     const [cartTotal,setcartTotal] = carttotal;
 
+    const [open,setOpen] = useState(false);
+
+    const [name,setName] = useState('');
+    
+    const [email,setEmail] = useState('');
+    const [emailHelper,setEmailHelper] = useState('');
+
+    const [phone,setPhone] = useState('');
+    const [phoneHelper,setPhoneHelper] = useState('');
+
+    const [pincode,setPincode] = useState('');
+    const [pincodeHelper,setPincodeHelper] = useState('');
+
+    const [city,setCity] = useState('');
+
+    const [state,setState] = useState('');
+
+    const [address,setAddress] = useState('');
+
+    const [message,setMessage] = useState('');
+
     const ide = user;
 
+    // const [amount, setAmount] = useState()
+
+    const [product] = React.useState({
+       name: "Purchase",
+       description: dataCart
+    });
     // useeffest
     useEffect(() => {
        console.log({dataCart})
@@ -114,7 +193,23 @@ export default function Cart(props){
             setTot(total)
         })
     }
-
+    
+    // on submit data
+    const submit = () => {
+        database.collection('users').doc(ide).collection('shipping').add(
+            {
+                name,
+                email,
+                phone,
+                pincode,
+                city,
+                state,
+                address,
+                message,
+                cartTotal
+            }
+        )
+    }
     // add to whistlist
     const addtoWish = (doc) => {
         let q = dataWishlist.filter(a => a.productName === doc.productName)
@@ -155,7 +250,63 @@ export default function Cart(props){
         else {
             toast.warn("Please Login First")
         }
+    }
+    // stripe
+    async function handleToken(token) {
+        const response = await axios.post(
+            "http://localhost:5000/checkout",
+            { token, cartTotal ,address}
+        );
+        const { status } = response.data;
+        console.log("Response:", response.data);
+        // setcartTotal(0);
+        if (status === "success") {
+            console.log("Success! Check email for details", { type: "success" });
+            
+        } else {
+            console.log("Something went wrong", { type: "error" });
+        }
+    }
+    const onChange = event => {
+        let valid;
 
+        switch(event.target.id)
+        {
+            case 'email' :
+                setEmail(event.target.value);
+                valid = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(event.target.value);
+
+                if(!valid){
+                    setEmailHelper('Invaild email');
+                }else
+                {
+                    setEmailHelper('');
+                }
+                break;
+            case 'phone' :
+                setPhone(event.target.value)
+                valid = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(event.target.value);
+
+                if(!valid) {
+                    setPhoneHelper('Invalid phone')
+                }else{
+                    setPhoneHelper('')
+                }
+                break;
+            case 'pincode' :
+                setPincode(event.target.value)
+                valid = /^\d{6}$/.test(event.target.value);
+
+                if(!valid) {
+                    setPincodeHelper('Invalid Pincode')
+                }else{
+                    setPincodeHelper('')
+                }
+                break;
+
+                default :
+                break;
+        }
     }
     const OriginalPrice = styled.span`
     text-decoration: line-through;
@@ -219,45 +370,198 @@ export default function Cart(props){
                             </Typography>
                             <br />
                             <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                                The total Price is ${cartTotal}
+                                The total Price is ₹{cartTotal}
                             </Typography>
                             <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
                                     You Saved ₹{cartSave}
                                 </Typography>
                             <br />
-                            <Button>
-                                Pay Now
+                            <Button onClick={() => setOpen(true)} style={{ backgroundColor: 'orange' }}>
+                                            Checkout
                             </Button>
+                            {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
+                            token={handleToken}
+                            cartTotal={cartTotal * 100}
+                            name="Payment"
+                            // billingAddress
+                            // shippingAddress
+                        >
+                        <Button variant='contained' style={{backgroundColor:'#DA0037'}}>
+                            <Typography variant='h6' style={{color:'#EDEDED'}}>pay with card</Typography>
+                        </Button>
+                        </StripeCheckout> */}
                         </CardContent>
                     </Card>
             </Grid>
             </Grid>
+            {/* diaglog model */}
+            <Dialog open={open} 
+            onClose={()=>setOpen(false)}  
+            style={{ zIndex: 1302 }}
+            maxWidth='lg'
+                fullScreen={matchesSM}
+                PaperProps={{
+                    style: {
+                      paddingTop: matchesXS ? "1em" : "5em",
+                      paddingBottom: matchesXS ? "1em" : "5em",
+                      paddingLeft: matchesXS
+                        ? 0
+                        : matchesSM
+                        ? '5em'
+                        : matchesMD
+                        ? "15em"
+                        : "25em",
+                      paddingRight: matchesXS
+                        ? 0
+                        : matchesSM
+                        ? '5em'
+                        : matchesMD
+                        ? "15em"
+                        : "25em"
+                    }
+                  }}>
+            <Grid>
+            <DialogContent >
+                    <Grid container direction='column'>
+                        <Grid item>
+                            <Typography align="center" variant="h4" gutterBottom>
+                                Shipping information
+                            </Typography>
+                        </Grid>
+                        <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='Name'
+                                    id='name'
+                                    fullWidth
+                                    value={name}
+                                    onChange={(e)=>setName(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='Email'
+                                    error={emailHelper.length !== 0}
+                                    helperText={emailHelper}
+                                    id='email'
+                                    fullWidth
+                                    value={email}
+                                    onChange={onChange}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='Phone' 
+                                    error= {phoneHelper.length !== 0}
+                                    helperText={phoneHelper}
+                                    id='phone'
+                                    fullWidth
+                                    value={phone}
+                                    onChange={onChange}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='Pincode' 
+                                    error= {pincodeHelper.length !== 0}
+                                    helperText={pincodeHelper}
+                                    id='pincode'
+                                    fullWidth
+                                    value={pincode}
+                                    onChange={onChange}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='City' 
+                                    // error= {phoneHelper.length !== 0}
+                                    // helperText={phoneHelper}
+                                    id='city'
+                                    fullWidth
+                                    value={city}
+                                    onChange={(e)=>setCity(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='State' 
+                                    // error= {phoneHelper.length !== 0}
+                                    // helperText={phoneHelper}
+                                    id='state'
+                                    fullWidth
+                                    value={state}
+                                    onChange={(e)=>setState(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item style={{marginBottom:'0.5em'}}>
+                                <TextField 
+                                    label='Addresss' 
+                                    // error= {phoneHelper.length !== 0}
+                                    // helperText={phoneHelper}
+                                    id='state'
+                                    fullWidth
+                                    value={address}
+                                    onChange={(e)=>setAddress(e.target.value)}
+                                />
+                            </Grid>
+                        </Grid>
+                        <Grid item style={{ width: matchesSM ? '100%' : "20em" }} >
+                            <TextField
+                                InputProps={{disableUnderline:true}}
+                                value={message}
+                                placeholder='Tell us more about your Address'
+                                multiline
+                                fullWidth
+                                rows={10}
+                                id='message'
+                                onChange={(e)=>setMessage(e.target.value)}
+                                className={classes.message}
+                            />
+                        </Grid>
+                        <Grid 
+                            item 
+                            container
+                            direction={matchesSM ? 'column' : 'row'}
+                            style={{marginTop:'2em'}}
+                            alignItems='center'
+                        >
+                            <Grid item>
+                                <Button 
+                                    style={{fontWeight:300}}
+                                    color='primary' 
+                                    onClick={()=>setOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                            </Grid>
+                        <Grid item>
+                        <Button 
+                        component={Link} to='/Checkout'
+                                disabled={
+                                    name.length === 0 ||
+                                    email.length === 0 ||
+                                    phone.length === 0 ||
+                                    message.length === 0 ||
+                                    phoneHelper.length !== 0 ||
+                                    emailHelper.length !== 0 ||
+                                    pincodeHelper.length !==0 ||
+                                    pincode ==0 ||
+                                    address == 0 ||
+                                    state == 0 ||
+                                    city ==0
+                                    }
+                                variant='contained' 
+                                className={classes.sendButton}
+                                onClick={submit}
+                            >
+                             submit
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+            </Grid>
+        </Dialog>
         </Grid>
             : 'sign first' }
             </div>
     )
 }
-
-{/* < Container style={{ alignItem: 'center', justifyContent: "center" }}>
-<h3>Cart   </h3>
-{console.log(docs)}
-
-<Row fixed>
-    {docs && docs.map((doc) =>
-        <Col xs={13} md={3}>
-            <ItemCards
-                key={doc.id}
-                id={doc.id}
-                productName={doc.productName}
-                image={doc.image}
-                price={doc.price}
-            />
-        </Col>
-    )}
-</Row>
-</Container>
-<Container>
-<Row>
-    <h3>Total Price:</h3>
-</Row>
-</Container> */}

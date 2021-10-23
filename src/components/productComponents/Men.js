@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import GetData from '../../GetData';
 import ItemCards from './ItemCards';
 import { StateContext, StateProvider } from '../../context/StateContext';
+import Filter from './Filter';
 
 
 export default function Mens(props) {
@@ -34,6 +35,7 @@ console.log(user)
 
             < Container style={{ alignItem: 'center', justifyContent: "center" }}>
                 <h3>Men's Clothing  {user}  </h3>
+                <Filter/>
           <CardStyle>
                     {dataMens && dataMens.map((doc) =>
                     

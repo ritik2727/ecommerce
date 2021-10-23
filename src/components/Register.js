@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel, makeStyles } from '@material-ui/core'
+import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel, makeStyles,Grid} from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import withStyles from '@material-ui/core/styles/withStyles'
 import { Link, withRouter } from 'react-router-dom'
@@ -12,8 +12,8 @@ const useStyles = makeStyles( theme => ({
 		display: 'block', // Fix IE 11 issue.
 		marginLeft: theme.spacing.unit * 3,
 		marginRight: theme.spacing.unit * 3,
-		[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-			width: 400,
+		[theme.breakpoints.up(500 + theme.spacing.unit * 3 * 2)]: {
+			width: 500,
 			marginLeft: 'auto',
 			marginRight: 'auto',
 		},
@@ -105,8 +105,14 @@ export default function Register(props) {
 						className={classes.submit}>
 						Register
           			</Button>
-
-					<Button
+					  <Grid container justifyContent="flex-end" style={{marginTop:'1em'}}>
+						<Grid item>
+							<Link to='/login' variant="body2">
+							Already have an account? Sign in
+							</Link>
+						</Grid>
+					</Grid>
+					{/* <Button
 						type="submit"
 						fullWidth
 						variant="contained"
@@ -115,7 +121,7 @@ export default function Register(props) {
 						to="/login"
 						className={classes.submit}>
 						Go back to Login
-          			</Button>
+          			</Button> */}
 				</form>
 			</Paper>
 		</main>
