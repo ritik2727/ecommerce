@@ -60,7 +60,7 @@
 //     )
 // }
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Grid, makeStyles, Typography, useTheme, useMediaQuery } from '@material-ui/core';
 import { database } from '../../firebase'
 import Card from '@material-ui/core/Card';
@@ -124,11 +124,11 @@ export default function Wishlist(props) {
     //hooks
 
     const { wish, cart, userdata, wishsave, wishtotal } = useContext(StateContext);
-    const [dataCart, setDataCart] = cart;
-    const [dataWishlist, setDataWishlist] = wish;
-    const [user, setUser] = userdata;
-    const [wishSave, setWishSave] = wishsave;
-    const [wishTotal, setWishTotal] = wishtotal;
+    const [dataCart] = cart;
+    const [dataWishlist] = wish;
+    const [user ] = userdata;
+    const [wishSave] = wishsave;
+    const [wishTotal] = wishtotal;
     const ide = user;
 
 

@@ -1,15 +1,15 @@
 import React,{useContext} from 'react'
-import { Link } from 'react-router-dom'
+
 import styled from 'styled-components';
-import { Container, Row, Col } from 'react-bootstrap'
-import GetData from '../../GetData';
+import { Container } from 'react-bootstrap'
+
 import ItemCards from './ItemCards';
-import { StateContext, StateProvider } from '../../context/StateContext';
+import { StateContext } from '../../context/StateContext';
 
 
 export default function MobileCover(props) {
     const {mobile} =  useContext(StateContext);
-    const [dataMobile,setDataMobile] =  mobile
+    const [dataMobile] =  mobile
     // const { docs } = GetData("mens");
     const CardStyle = styled.div`
   display: flex;

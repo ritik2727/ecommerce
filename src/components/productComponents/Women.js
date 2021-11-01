@@ -1,13 +1,13 @@
-import { Menu } from '@material-ui/core';
+
 import React ,{useContext} from 'react';
-import GetData from '../../GetData';
+
 import ItemCards from './ItemCards';
-import { StateContext, StateProvider } from '../../context/StateContext';
+import { StateContext} from '../../context/StateContext';
 
 export default function Women(){
     // const { docs } = GetData("womens");
     const {womens} =  useContext(StateContext);
-    const [dataWomens,setDataWomens] =  womens;
+    const [dataWomens] =  womens;
 
     return (
         <div>

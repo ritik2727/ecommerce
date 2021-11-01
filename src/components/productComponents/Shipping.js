@@ -1,11 +1,6 @@
 import { Grid,useTheme,useMediaQuery,Typography, makeStyles,TextField,Button } from '@material-ui/core';
 import React from 'react';
-import MailIcon from '@material-ui/icons/Mail';
-// import airplane from "../assets/send.svg";
-import { CircularProgress } from '@material-ui/core';
-import { Snackbar } from '@material-ui/core';
 
-import PhoneIcon from '@material-ui/icons/Phone';
 
 const useStyles = makeStyles(theme=>({
     esitmate:{
@@ -63,7 +58,7 @@ export default function Shipping(){
     const theme = useTheme();
     const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
     const matchesMD = useMediaQuery(theme.breakpoints.down('md'))
-    const matchesXS = useMediaQuery(theme.breakpoints.down('xs'))
+    // const matchesXS = useMediaQuery(theme.breakpoints.down('xs'))
 
     const buttonContents = (
         <React.Fragment>

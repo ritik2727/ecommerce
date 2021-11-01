@@ -1,17 +1,17 @@
 import React,{useContext} from 'react'
-import { Link } from 'react-router-dom'
+
 import styled from 'styled-components';
-import { Container, Row, Col } from 'react-bootstrap'
-import GetData from '../../GetData';
+import { Container} from 'react-bootstrap'
+
 import ItemCards from './ItemCards';
-import { StateContext, StateProvider } from '../../context/StateContext';
+import { StateContext } from '../../context/StateContext';
 import Filter from './Filter';
 
 
 export default function Mens(props) {
     const {mens,userdata} =  useContext(StateContext);
-    const [dataMens,setDataMens] =  mens;
-    const [user,setUser] = userdata;
+    const [dataMens] =  mens;
+    const [user] = userdata;
     // const { docs } = GetData("mens");
     const CardStyle = styled.div`
   display: flex;

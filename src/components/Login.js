@@ -63,9 +63,6 @@ export default function Login() {
 		  .signInWithPopup(provider)
 		  .then((result) => {
 			/** @type {firebase.auth.OAuthCredential} */
-			var credential = result.credential;
-			var token = credential.accessToken;
-			var user = result.user;
 			if (result) {
 			  history.push("/");
 			}
@@ -75,6 +72,7 @@ export default function Login() {
 			var errorMessage = error.message;
 			var email = error.email;
 			var credential = error.credential;
+			console.log(errorCode, " ", errorMessage, " ", email, " ", credential)
 			// ...
 		  });
 	}
@@ -117,7 +115,7 @@ export default function Login() {
 							</Link>
 						</Grid>
 					</Grid>
-					<Divider spacing={2}>Hello World</Divider>
+				
 					{/* <Divider>
 						<span>
 							hi

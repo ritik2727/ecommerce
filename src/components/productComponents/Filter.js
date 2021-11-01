@@ -7,11 +7,6 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
-import { auth } from '../../firebase'
-import { useHistory } from 'react-router';
-import PersonIcon from '@material-ui/icons/Person';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { ListItemText } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 

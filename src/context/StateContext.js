@@ -14,6 +14,7 @@ export const StateProvider = (props) => {
    const [dataMobile, setDataMobile] = useState([])
    const [dataCart, setDataCart] = useState([])
    const [dataWishlist, setDataWishlist] = useState([])
+   const [add, setAdd] = useState([])
 
 
    useEffect(() => {
@@ -91,7 +92,18 @@ export const StateProvider = (props) => {
             setWishSave(save)
             setWishTotal(total)
          })
-      }
+
+      //address
+
+
+      const getAddress = [];
+      database.collection('users').doc(user).collection('shipping').onSnapshot((querySnapshot) => {
+         querySnapshot.forEach((doc) => {
+            getAddress.push({ ...doc.data(), key: doc.id });
+         });
+         setAdd(getAddress);
+      });
+   }
 
 
    }, [user])
@@ -112,6 +124,7 @@ export const StateProvider = (props) => {
             carttotal: [cartTotal, setcartTotal],
             wishsave: [wishSave, setWishSave],
             wishtotal: [wishTotal, setWishTotal],
+            addr:[add,setAdd]
          }
          }
       >

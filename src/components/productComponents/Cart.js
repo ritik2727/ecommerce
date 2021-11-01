@@ -116,7 +116,7 @@ export default function Cart(props){
     const [docs, setDocs] = useState([]);
     const [quantity, setQuantity] = useState(1);
 
-    const {cart,userdata,wish,cartsave,carttotal} =  useContext(StateContext);
+    const {cart,userdata,wish,cartsave,carttotal,addr} =  useContext(StateContext);
     const [dataCart,setDataCart] =  cart;
     const [user,setUser] = userdata;
     const [dataWishlist,setDataWishlist] = wish;
@@ -145,6 +145,7 @@ export default function Cart(props){
     const [message,setMessage] = useState('');
 
     const ide = user;
+    const [add] = addr;
 
     // const [amount, setAmount] = useState()
 
@@ -319,7 +320,11 @@ export default function Cart(props){
 
       if (dataCart.length === 0 )
       return (
+          <div>
+          {props.user ?
           <img src={`https://i.pinimg.com/originals/fa/90/cd/fa90cdab2a780306d0c350964c81e391.png`} alt="Logo" style={{ width: '100%', height: '30em' }} />
+          : 'sign ifrst' }
+          </div>
       )
   else if (dataCart !== null)
     return(
@@ -376,9 +381,16 @@ export default function Cart(props){
                                     You Saved ₹{cartSave}
                                 </Typography>
                             <br />
-                            <Button onClick={() => setOpen(true)} style={{ backgroundColor: 'orange' }}>
+
+                            {add.length === 0 ? <Button onClick={() => setOpen(true)} style={{ backgroundColor: '#506D84' }}>
+                                            Add Address
+                                        </Button> :
+                                            <Button component={Link} to='/Checkout' style={{ backgroundColor: 'red' }}>Go To checkout</Button>
+
+                                        }
+                            {/* <Button onClick={() => setOpen(true)} style={{ backgroundColor: 'orange' }}>
                                             Checkout
-                            </Button>
+                            </Button> */}
                             {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
                             token={handleToken}
                             cartTotal={cartTotal * 100}

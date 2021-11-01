@@ -17,6 +17,7 @@ import MobileCover from "./productComponents/MobileCover";
 import Shipping from "./productComponents/Shipping";
 import Checkout from "./productComponents/Checkout";
 import ForgotPassword from "./ForgetPassward";
+import Search from "./ui/Search";
 
 function App() {
   const [value,setValue] = useState(0);
@@ -64,7 +65,9 @@ function App() {
             )} />
             <Route exact path='/checkout' component={Checkout} />
             <Route exact path='/register' component={Register}  />
+          
             <Route exact path='/forget' component={ForgotPassword}  />
+            <Route path="/Search" component={Search} />
         </Switch>
         {/* <Footer
           setValue={setValue}

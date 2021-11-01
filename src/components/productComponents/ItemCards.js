@@ -1,4 +1,4 @@
-import { Button, Card, CardActions,CardActionArea, CardContent, CardMedia, makeStyles,Typography,useMediaQuery,useTheme } from '@material-ui/core';
+import {  Card, CardContent, CardMedia, makeStyles,Typography } from '@material-ui/core';
 import React, { useEffect,useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -7,8 +7,8 @@ import styled from "styled-components";
 import { auth, database } from '../../firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Favorite, LocalMall, Star } from "@material-ui/icons";
-import { Toast } from 'react-bootstrap';
+import {  LocalMall} from "@material-ui/icons";
+
 const useStyles = makeStyles(theme=>({
     root: {
         width:'15rem',
@@ -33,10 +33,10 @@ const useStyles = makeStyles(theme=>({
 export default function ItemCards({id,productName,image,price,oldPrice},props){
     const classes = useStyles();
     const [user, setUser] = useState("")
-    const theme = useTheme();
-    const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
-    const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
-    const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
+    // const theme = useTheme();
+    // const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
+    // const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
+    // const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
     const [docs, setDocs] = useState([]);
     const [wishData,setWishData] = useState([]);
 
