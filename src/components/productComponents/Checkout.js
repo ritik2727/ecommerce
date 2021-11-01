@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { Form } from 'react-bootstrap'
 // import { StateContext } from '../../context/StateProvider';
-import {StateContext} from '../../context/StateContext';
+import { StateContext } from '../../context/StateContext';
 import StripeCheckout from 'react-stripe-checkout';
 import axios from "axios";
 const useStyles = makeStyles(theme => ({
@@ -138,34 +138,36 @@ export default function Checkout() {
          console.log("Something went wrong", { type: "error" });
       }
    }
-//      // stripe
-//      async function handleToken(token) {
-//       const response = await axios.post(
-//           "http://localhost:5000/checkout",
-//           { token, cartTotal ,address}
-//       );
-//       const { status } = response.data;
-//       console.log("Response:", response.data);
-//       // setcartTotal(0);
-//       if (status === "success") {
-//           console.log("Success! Check email for details", { type: "success" });
-          
-//       } else {
-//           console.log("Something went wrong", { type: "error" });
-//       }
-//   }
+   //      // stripe
+   //      async function handleToken(token) {
+   //       const response = await axios.post(
+   //           "http://localhost:5000/checkout",
+   //           { token, cartTotal ,address}
+   //       );
+   //       const { status } = response.data;
+   //       console.log("Response:", response.data);
+   //       // setcartTotal(0);
+   //       if (status === "success") {
+   //           console.log("Success! Check email for details", { type: "success" });
+
+   //       } else {
+   //           console.log("Something went wrong", { type: "error" });
+   //       }
+   //   }
 
 
    // Address FEtch
    useEffect(() => {
       const getAddress = [];
-      database.collection('users').doc(ide).collection('shipping').onSnapshot((querySnapshot) => {
-         querySnapshot.forEach((doc) => {
-            getAddress.push({ ...doc.data(), key: doc.id });
+      if (ide) {
+         database.collection('users').doc(ide).collection('shipping').onSnapshot((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+               getAddress.push({ ...doc.data(), key: doc.id });
+            });
+            setAddress(getAddress);
+            setAmount(cartTotal)
          });
-         setAddress(getAddress);
-         setAmount(cartTotal)
-      });
+      }
    }, [ide])
 
 
@@ -270,7 +272,7 @@ export default function Checkout() {
       </div >
    )
 }
- {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
+{/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
                             token={handleToken}
                             cartTotal={cartTotal * 100}
                             name="Payment"
