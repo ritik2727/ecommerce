@@ -4,13 +4,15 @@ const arcBlue = '#0B72B9';
 const arcOrange = '#FFBA60';
 const arcGrey ='#DDDDDD'
 const arcWhite ='#F7F6F2'
+const arcBlack = '#000000'
 export default createTheme({
   palette: {
     common: {
       blue: arcBlue,
       orange: arcOrange,
       grey:arcGrey,
-      white:arcWhite
+      white:arcWhite,
+      black:arcBlack
     },
     primary: {
       main: arcBlue
@@ -90,21 +92,21 @@ export default createTheme({
   overrides :{
     MuiInputLabel:{
       root:{
-        color:arcBlue,
+        color:arcBlack,
         fontSize:'1rem'
       }
     },
     MuiInput:{
       root: {
-        color: arcBlue,
+        color: arcBlack,
         fontWeight: 300
       },
       underline: {
         "&:before": {
-          borderBottom: `2px solid ${arcBlue}`
+          borderBottom: `2px solid ${arcBlack}`
         },
         "&:hover:not($disabled):not($focused):not($error):before": {
-          borderBottom: `2px solid ${arcBlue}`
+          borderBottom: `2px solid ${arcBlack}`
         }
       }
     }

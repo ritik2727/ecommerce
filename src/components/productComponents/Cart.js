@@ -1,7 +1,6 @@
 import React ,{useState,useEffect,useContext} from 'react';
-import StripeCheckout from 'react-stripe-checkout';
+// import StripeCheckout from 'react-stripe-checkout';
 import axios from "axios";
-
 import { database } from '../../firebase';
 import styled from "styled-components";
 import { Grid, makeStyles, Typography,useTheme,useMediaQuery,Button ,TextField,MenuItem,InputLabel, Dialog,DialogContent} from '@material-ui/core';
@@ -84,7 +83,7 @@ const useStyles = makeStyles(theme=>({
     },
     message:{
         border: `2px solid ${theme.palette.common.black}`,
-        marginTop:'5em',
+        marginTop:'3em',
         borderRadius:5
     },
     sendButton:{
@@ -93,9 +92,10 @@ const useStyles = makeStyles(theme=>({
         height:45,
         width:245,
         fontSize:'1rem',
-        backgroundColor:theme.palette.common.black,
+        color:'white',
+        backgroundColor:'#51CCCC',
         "&:hover":{
-            backgroundColor:theme.palette.common.black.light
+            backgroundColor:'#69DADB'
         },
         [theme.breakpoints.down("sm")]: {
             height: 40,
@@ -107,58 +107,53 @@ const useStyles = makeStyles(theme=>({
 export default function Cart(props){
     const classes = useStyles();
     const theme = useTheme();
-
-    const [tot, setTot] = useState(0)
-    const [sav, setSave] = useState(0)
     const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
     const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
     const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
-    const [docs, setDocs] = useState([]);
-    const [quantity, setQuantity] = useState(1);
 
+    // context
     const {cart,userdata,wish,cartsave,carttotal,addr} =  useContext(StateContext);
-    const [dataCart,setDataCart] =  cart;
-    const [user,setUser] = userdata;
-    const [dataWishlist,setDataWishlist] = wish;
-    const [cartSave,setcartSave] = cartsave;
-    const [cartTotal,setcartTotal] = carttotal;
-
-    const [open,setOpen] = useState(false);
-
-    const [name,setName] = useState('');
-    
-    const [email,setEmail] = useState('');
-    const [emailHelper,setEmailHelper] = useState('');
-
-    const [phone,setPhone] = useState('');
-    const [phoneHelper,setPhoneHelper] = useState('');
-
-    const [pincode,setPincode] = useState('');
-    const [pincodeHelper,setPincodeHelper] = useState('');
-
-    const [city,setCity] = useState('');
-
-    const [state,setState] = useState('');
-
-    const [address,setAddress] = useState('');
-
-    const [message,setMessage] = useState('');
-
+    const [dataCart] =  cart;
+    const [user] = userdata;
+    const [dataWishlist] = wish;
+    const [cartSave] = cartsave;
+    const [cartTotal] = carttotal;
     const ide = user;
     const [add] = addr;
 
+
+    // state
+    const [tot, setTot] = useState(0)
+    // const [sav, setSave] = useState(0)
+    // const [docs, setDocs] = useState([]);
+    // const [quantity, setQuantity] = useState(1);
+
+    const [open,setOpen] = useState(false);
+    const [name,setName] = useState('');
+    const [email,setEmail] = useState('');
+    const [emailHelper,setEmailHelper] = useState('');
+    const [phone,setPhone] = useState('');
+    const [phoneHelper,setPhoneHelper] = useState('');
+    const [pincode,setPincode] = useState('');
+    const [pincodeHelper,setPincodeHelper] = useState('');
+    const [city,setCity] = useState('');
+    const [state,setState] = useState('');
+    const [address,setAddress] = useState('');
+    const [message,setMessage] = useState('');
+
+   
     // const [amount, setAmount] = useState()
 
-    const [product] = React.useState({
-       name: "Purchase",
-       description: dataCart
-    });
-    // useeffest
-    useEffect(() => {
-       console.log({dataCart})
-      tote()
+    // const [product] = React.useState({
+    //    name: "Purchase",
+    //    description: dataCart
+    // });
+    // // useeffest
+    // useEffect(() => {
+    //    console.log({dataCart})
+    //   tote()
 
-    }, [tot])
+    // }, [tot])
 
     // delete
     const deleteItem = async(id, e) => {
@@ -168,7 +163,7 @@ export default function Cart(props){
         .doc(id)
         .delete()
         .then(() => { 
-            tote() 
+
             toast("Product Deleted", {
                 position: "bottom-right",
                 autoClose: 1000,
@@ -178,37 +173,6 @@ export default function Cart(props){
                 draggable: true,
                 progress: undefined,
         })}
-        )
-    }
-
-    // total
-    function tote() {
-        database.collection('users').doc(ide).collection('cart').onSnapshot((a) => {
-            let total =0;
-            let save =0;
-            a.forEach((item) => {
-                total = total + Number(item.data().price)
-                save = save + Number(item.data().oldPrice - item.data().price)
-            })
-            setSave(save)
-            setTot(total)
-        })
-    }
-    
-    // on submit data
-    const submit = () => {
-        database.collection('users').doc(ide).collection('shipping').add(
-            {
-                name,
-                email,
-                phone,
-                pincode,
-                city,
-                state,
-                address,
-                message,
-                cartTotal
-            }
         )
     }
     // add to whistlist
@@ -252,22 +216,38 @@ export default function Cart(props){
             toast.warn("Please Login First")
         }
     }
-    // stripe
-    async function handleToken(token) {
-        const response = await axios.post(
-            "http://localhost:5000/checkout",
-            { token, cartTotal ,address}
-        );
-        const { status } = response.data;
-        console.log("Response:", response.data);
-        // setcartTotal(0);
-        if (status === "success") {
-            console.log("Success! Check email for details", { type: "success" });
-            
-        } else {
-            console.log("Something went wrong", { type: "error" });
-        }
+
+     // on submit data
+     const submit = () => {
+        database.collection('users').doc(ide).collection('shipping').add(
+            {
+                name,
+                email,
+                phone,
+                pincode,
+                city,
+                state,
+                address,
+                message,
+                cartTotal
+            }
+        )
     }
+    
+    // total
+    // function tote() {
+    //     database.collection('users').doc(ide).collection('cart').onSnapshot((a) => {
+    //         let total =0;
+    //         let save =0;
+    //         a.forEach((item) => {
+    //             total = total + Number(item.data().price)
+    //             save = save + Number(item.data().oldPrice - item.data().price)
+    //         })
+    //         setSave(save)
+    //         setTot(total)
+    //     })
+    // }
+    
     const onChange = event => {
         let valid;
 
@@ -309,6 +289,9 @@ export default function Cart(props){
                 break;
         }
     }
+   
+  
+    
     const OriginalPrice = styled.span`
     text-decoration: line-through;
     font-size: 15px;
@@ -322,7 +305,7 @@ export default function Cart(props){
       return (
           <div>
           {props.user ?
-          <img src={`https://i.pinimg.com/originals/fa/90/cd/fa90cdab2a780306d0c350964c81e391.png`} alt="Logo" style={{ width: '100%', height: '30em' }} />
+          <img src={`https://images.bewakoof.com/images/doodles/empty-cart-page-doodle.png`} alt="Logo" style={{ width: 150,alignContent:'center'}} />
           : 'sign ifrst' }
           </div>
       )
@@ -414,32 +397,38 @@ export default function Cart(props){
                 fullScreen={matchesSM}
                 PaperProps={{
                     style: {
-                      paddingTop: matchesXS ? "1em" : "5em",
+                      paddingTop: matchesXS ? "1em" : "1em",
                       paddingBottom: matchesXS ? "1em" : "5em",
                       paddingLeft: matchesXS
                         ? 0
                         : matchesSM
                         ? '5em'
                         : matchesMD
-                        ? "15em"
-                        : "25em",
+                        ? "10em"
+                        : "10em",
                       paddingRight: matchesXS
                         ? 0
                         : matchesSM
                         ? '5em'
                         : matchesMD
-                        ? "15em"
-                        : "25em"
+                        ? "10em"
+                        : "10em"
                     }
                   }}>
             <Grid>
             <DialogContent >
                     <Grid container direction='column'>
                         <Grid item>
-                            <Typography align="center" variant="h4" gutterBottom>
-                                Shipping information
+                            <Typography align="left" variant="h4" style={{color:'black'}} gutterBottom>
+                                Add Address
                             </Typography>
                         </Grid>
+                        <Grid item>
+                            <Typography align="left" variant="h5" style={{color:'black',fontWeight:200}} gutterBottom>
+                               <u> Delivery Info</u>
+                            </Typography>
+                        </Grid>
+
                         <Grid item style={{marginBottom:'0.5em'}}>
                                 <TextField 
                                     label='Name'
@@ -471,6 +460,11 @@ export default function Cart(props){
                                     onChange={onChange}
                                 />
                             </Grid>
+                            <Grid item>
+                            <Typography align="left" variant="h5" style={{marginTop:'2em',marignBottom:'2em',color:'black',fontWeight:200}} gutterBottom>
+                               <u> Address </u>
+                            </Typography>
+                        </Grid>
                             <Grid item style={{marginBottom:'0.5em'}}>
                                 <TextField 
                                     label='Pincode' 
@@ -516,14 +510,14 @@ export default function Cart(props){
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item style={{ width: matchesSM ? '100%' : "20em" }} >
+                        <Grid item style={{ width: matchesSM ? '100%' :matchesMD ? '25em': "30em" }} >
                             <TextField
                                 InputProps={{disableUnderline:true}}
                                 value={message}
                                 placeholder='Tell us more about your Address'
                                 multiline
                                 fullWidth
-                                rows={10}
+                                rows={5}
                                 id='message'
                                 onChange={(e)=>setMessage(e.target.value)}
                                 className={classes.message}
@@ -535,11 +529,11 @@ export default function Cart(props){
                             direction={matchesSM ? 'column' : 'row'}
                             style={{marginTop:'2em'}}
                             alignItems='center'
+                            justifyContent='center'
                         >
                             <Grid item>
                                 <Button 
-                                    style={{fontWeight:300}}
-                                    color='primary' 
+                                    style={{fontWeight:300,color:'#51CCCC'}}
                                     onClick={()=>setOpen(false)}
                                 >
                                     Cancel
@@ -565,7 +559,7 @@ export default function Cart(props){
                                 className={classes.sendButton}
                                 onClick={submit}
                             >
-                             submit
+                             Save
                             </Button>
                         </Grid>
                     </Grid>

@@ -138,6 +138,22 @@ export default function Checkout() {
          console.log("Something went wrong", { type: "error" });
       }
    }
+//      // stripe
+//      async function handleToken(token) {
+//       const response = await axios.post(
+//           "http://localhost:5000/checkout",
+//           { token, cartTotal ,address}
+//       );
+//       const { status } = response.data;
+//       console.log("Response:", response.data);
+//       // setcartTotal(0);
+//       if (status === "success") {
+//           console.log("Success! Check email for details", { type: "success" });
+          
+//       } else {
+//           console.log("Something went wrong", { type: "error" });
+//       }
+//   }
 
 
    // Address FEtch
@@ -237,7 +253,7 @@ export default function Checkout() {
                         {
                            value === "Pay With Card" ?
                               <>
-                                 <StripeCheckout stripeKey='pk_test_51JObFKSAm54TGSWjZQQVnpytQbBKaz7MqR7ewLtoeqZSsO9SZUl7n3ZZm3zEYV3sYmQnZaVbzZCttT3in6KJTxKS00lJalhL2a'
+                                 <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
                                     token={handleToken}
                                     amount={cartTotal * 100}
                                     name="Payment"
@@ -252,7 +268,16 @@ export default function Checkout() {
             </Grid>
          </Grid>
       </div >
-
-
    )
 }
+ {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
+                            token={handleToken}
+                            cartTotal={cartTotal * 100}
+                            name="Payment"
+                            // billingAddress
+                            // shippingAddress
+                        >
+                        <Button variant='contained' style={{backgroundColor:'#DA0037'}}>
+                            <Typography variant='h6' style={{color:'#EDEDED'}}>pay with card</Typography>
+                        </Button>
+                        </StripeCheckout> */}
