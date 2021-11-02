@@ -16,6 +16,19 @@ const Search = () => {
       searchData();
    }, [search])
    const searchData = async () => {
+      console.log(search)
+      let cw = await database.collection('collection').doc('womens')
+      cw.collection('lists').where("productName", "==", search).get().then((querySnapshot) => {
+         const fdata = [];
+         querySnapshot.forEach((item) => {
+            // doc.data() is never undefined for query doc snapshots
+            console.log(" => ", item.data());
+            fdata.push({ ...item.data(), key: item.id })
+         });
+         console.log(fdata)
+         if (fdata.length !== 0) { setData(fdata); }
+      }).catch(setData([]))
+
       let cm = await database.collection('collection').doc('mens')
       cm.collection('lists').where("productName", "==", search).get().then((querySnapshot) => {
          const fdata = [];
@@ -27,21 +40,9 @@ const Search = () => {
          if (fdata.length !== 0) {
             setData(fdata);
          }
-
       }).catch(setData([]))
 
-      let cw = await database.collection('collection').doc('women')
-      cw.collection('lists').where("productName", "==", search).get().then((querySnapshot) => {
-         const fdata = [];
-         querySnapshot.forEach((item) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(" => ", item.data());
-            fdata.push({ ...item.data(), key: item.id })
-         });
-         console.log(fdata)
-         if (fdata.length !== 0) { setData(fdata); }
 
-      })
 
    }
    return (
