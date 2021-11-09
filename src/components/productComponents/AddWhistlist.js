@@ -1,67 +1,6 @@
-// import React ,{useState,useEffect,useContext} from 'react';
-// import { database } from '../../firebase';
-// import ItemCards from './ItemCards';
-// import { Container, Row, Col } from 'react-bootstrap'
-// import { Favorite, LocalMall, Star } from "@material-ui/icons";
-// import { StateContext, StateProvider } from '../../context/StateContext';
 
-
-// export default function AddWhistlist(props){
-//     const [docs, setDocs] = useState([]);
-//     // const value = useContext(StateContext)
-//     // const [user,setUser] = useContext(StateContext)
-//     const {wish} =  useContext(StateContext);
-//     const [dataWishlist,setDataWishlist] =  wish;
-//     // const id = props.user.uid
-//     // useEffect(() => {
-//     //     const getDataFromFirebase = [];
-//     //     const subscriber = database.
-//     //     collection('users').
-//     //     doc(id).
-//     //     collection("wish").
-//     //     onSnapshot((querySnapshot) => {
-//     //         querySnapshot.forEach((doc) => {
-//     //             getDataFromFirebase.push({ ...doc.data(), key: doc.id });
-//     //         });
-//     //         setDocs(getDataFromFirebase);
-//     //     });
-//     //     return () => subscriber();
-//     // }, [])
-
-//     // console.log(docs)
-//     // console.log(user.id)
-//     return(
-//         <div>
-//             < Container style={{ alignItem: 'center', justifyContent: "center" }}>
-//                 <h3>WhistList  </h3>
-//                 {console.log(dataWishlist)}
-
-//                 <Row fixed>
-//                     {dataWishlist && dataWishlist.map((doc) =>
-//                         <Col xs={13} md={3}>
-//                             <ItemCards
-//                                 key={doc.id}
-//                                 id={doc.id}
-//                                 productName={doc.productName}
-//                                 image={doc.image}
-//                                 price={doc.price}
-//                                 oldPrice={doc.oldPrice}
-//                             />
-//                         </Col>
-//                     )}
-//                 </Row>
-//             </Container>
-//             <Container>
-//                 <Row>
-//                     <h3>Total Price:</h3>
-//                 </Row>
-//             </Container>
-//         </div>
-//     )
-// }
-
-import React, { useContext } from 'react';
-import { Grid, makeStyles, Typography, useTheme, useMediaQuery } from '@material-ui/core';
+import React, { useContext,useEffect } from 'react';
+import { Grid, makeStyles, Typography, useTheme, useMediaQuery,Button } from '@material-ui/core';
 import { database } from '../../firebase'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -70,9 +9,10 @@ import IconButton from '@material-ui/core/IconButton';
 // import Typography from '@material-ui/core/Typography';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
 import { StateContext } from '../../context/StateContext'
-import { LocalMallRounded } from "@material-ui/icons";
+import ReuseItem from './ReuseItem';
+import styled from "styled-components";
 
 
 const useStyles = makeStyles(theme => ({
@@ -82,14 +22,35 @@ const useStyles = makeStyles(theme => ({
         paddingTop: '2em',
         paddingBottom: '10em',
         [theme.breakpoints.down('sm')]: {
-            paddingLeft: '1.5em',
-            paddingRight: '1.5em',
+            paddingLeft: '1em',
+            paddingRight: '1em',
             paddingTop: '1em',
+        },
+        [theme.breakpoints.down('xs')]: {
+            paddingLeft: '0.5em',
+            paddingRight: '0.5em',
+            paddingTop: '0.5em',
         }
     },
     root: {
-        display: 'flex',
-    },
+        width:'15rem',
+        height:'25rem',
+      },
+    media: {
+        height: '19rem',
+        width:'15rem',
+        position:'absolute',
+        // paddingTop: '56.25%', // 16:9
+      },
+      rootV: {
+        width: '15em',
+        boxShadow:theme.shadows[10],
+        borderRadius:10,
+      },
+      mediaV: {
+        height: "19em",
+        width:'15em',
+      },
     details: {
         display: 'flex',
         flexDirection: 'column',
@@ -117,22 +78,26 @@ export default function Wishlist(props) {
     //material ui components
     const theme = useTheme();
     const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
+    const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
+    const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
     const classes = useStyles();
 
 
 
     //hooks
 
-    const { wish, cart, userdata, wishsave, wishtotal } = useContext(StateContext);
+    const { wish, cart, userdata } = useContext(StateContext);
     const [dataCart] = cart;
     const [dataWishlist] = wish;
     const [user ] = userdata;
-    const [wishSave] = wishsave;
-    const [wishTotal] = wishtotal;
     const ide = user;
 
 
     // use Effect
+    useEffect(() => {
+        window.scroll(0,0);
+    })
+
 
     //deletion fuction
     const deleteItem = async (id, e) => {
@@ -194,76 +159,92 @@ export default function Wishlist(props) {
 
     }
 
+    const OriginalPrice = styled.span`
+        text-decoration: line-through;
+        font-size: 15px;
+        font-weight: 100;
+        color: #7e818c;
+        padding: 0 0.2rem;
+        `;
+
 
 
 
     //rendering 
 
     if (dataWishlist.length === 0)
-        return (<>
-         
-          <img src={`https://i.pinimg.com/originals/fa/90/cd/fa90cdab2a780306d0c350964c81e391.png`} alt="Logo" style={{ width: '100%', height: '30em' }} />
-
-        </>)
+        return ( <div style={{alignItems:'center'}}>
+        <Grid container  direction="column"
+        alignItems="center"
+        justifyContent="center"
+        >
+            <Grid item style={{marginTop:matchesMD?'2em':'inherit'}}>
+        <img src={`https://images.bewakoof.com/web/group-3x-1509961969.png`} alt="Logo" style={{ width: 150,alignContent:'center'}} />
+        </Grid>
+        <Grid item>
+        <Typography variant='h5' 
+        style={{
+            color:'#000000CC',
+            fontFamily:'18px sans-serif',
+            marginBottom:'1em',
+            textAlign:'center'
+            }}
+          >
+        Your Wishlist is Empty !
+        </Typography>
+    </Grid>
+        <ReuseItem/>
+        </Grid>
+        </div>
+    )
     else
         return (
-            <Grid Container direction={matchesSM ? 'column' : ' row'} alignItems='center' className={classes.rowContainer}>
-                <Grid item container direction='row' justifyContent='center'  >
-                    <Grid item lg="4">
-
-                        {dataWishlist.map((doc) =>
-                            <Card className={classes.root} style={{ marginBottom: '2em' }}>
-                                <div className={classes.details}>
-                                    <CardContent className={classes.content}>
-                                        <Typography component="h5" variant="h5">
-                                            {doc.productName}
-                                        </Typography>
-                                        <Typography variant="subtitle1" color="textSecondary">
-                                            orignal price ₹ {doc.oldPrice}
-                                        </Typography>
-                                        <Typography variant="subtitle1" style={{ color: 'green' }}>
-                                            Offer Price ₹ {doc.price}
-                                        </Typography>
-                                    </CardContent>
-                                    <div className={classes.controls}>
-                                        <IconButton >
-                                            <DeleteIcon onClick={() => deleteItem(doc.key)} />
-                                        </IconButton>
-                                        <ToastContainer />
-                                        <IconButton >
-                                            <LocalMallRounded onClick={() => { addtoCart(doc) }} />
-                                        </IconButton>
-                                    </div>
-                                </div>
-                                <CardMedia
-                                    className={classes.cover}
-                                    image={doc.image}
-                                    title="Live from space album cover"
-                                />
-                            </Card>
-                        )}
-
-
-                    </Grid>
-                    <br />
-                    <Grid item lg={5} sm={8} xs={7} style={{ marginLeft: matchesSM ? 0 : '10em' }} alignItems='center'  >
-                        <Card style={{ backgroundColor: '#F6F6F7' }}>
-                            <CardContent>
-                                <Typography style={{ backgroundColor: '#F6F6F7', color: 'black', fontFamily: "cursive", borderBottom: 'solid ' }}>
-                                    Subtotal
-                                </Typography>
-                                <br />
-                                <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                                    The total Price is ₹{wishTotal}
-                                </Typography>
-                                <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                                    You Saved ₹{wishSave}
-                                </Typography>
-                                <br />
-                            </CardContent>
-                        </Card>
-                    </Grid>
+            <Grid Container direction='column' alignItems='center' justifyContent='center' className={classes.rowContainer}>
+                <Grid item>
+                    <Typography variant='h4'>
+                        WISHLIST
+                    </Typography>
                 </Grid>
-            </Grid >
+                <Grid item container direction='row' alignItems='center' justifyContent='center' className={classes.rowContainer}>
+                      {dataWishlist.map((doc) =>
+                    <Grid item style={{maxWidth:'40em',marginLeft:matchesXS?0:matchesSM?'1em':'4em'}} >
+
+                     
+                         <Card className={classes.rootV} style={{marginTop:'4em'}}>
+                         <CardMedia
+                           className={classes.mediaV}
+                           image={doc.image}
+                           title={doc.productName}
+                         >
+                             <IconButton >
+                        <CloseIcon onClick={() => deleteItem(doc.key)} />
+                        </IconButton>
+                    </CardMedia>
+                         <CardContent>
+                           <ToastContainer/>
+                           <Typography variant="h6" style={{color:'2D2D2D',fontFamily:'12px sans-serif'}} component="p">
+                            {doc.productName}
+                            </Typography>
+                           <Typography variant="body1" style={{color:'black'}} component="p">
+                           ₹{doc.price} <OriginalPrice id="price">{doc.oldPrice}</OriginalPrice>
+                           </Typography>
+                         </CardContent>
+                         <Button onClick={() => { addtoCart(doc) }}
+                            variant='outlined' style={{color:'grey',width:'17.2em',padding:'0.4em'}}>
+                               <Typography variant='h6' style={{color:'#333333'}}>
+                                   MOVE TO BAG
+                               </Typography>
+                           </Button>
+                       </Card>
+                          
+                  
+
+
+                    </Grid>
+                          )}
+                          </Grid>
+                   
+                </Grid>
         )
 }
+

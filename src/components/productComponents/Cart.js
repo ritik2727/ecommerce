@@ -1,18 +1,16 @@
 import React ,{useState,useEffect,useContext} from 'react';
-// import StripeCheckout from 'react-stripe-checkout';
-import axios from "axios";
 import { database } from '../../firebase';
 import styled from "styled-components";
-import { Grid, makeStyles, Typography,useTheme,useMediaQuery,Button ,TextField,MenuItem,InputLabel, Dialog,DialogContent} from '@material-ui/core';
+import { Grid, makeStyles, Typography,useTheme,useMediaQuery,Button ,TextField, Dialog,DialogContent} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { toast } from 'react-toastify';
 import { StateContext } from '../../context/StateContext';
 import { Link } from 'react-router-dom';
+import ReuseItem from './ReuseItem';
 // import database  from '../../firebase';
 
 const useStyles = makeStyles(theme=>({
@@ -29,10 +27,26 @@ const useStyles = makeStyles(theme=>({
             paddingLeft:'1.5em',
             paddingRight:'1.5em',
             paddingTop:'1em',
+        },
+        [theme.breakpoints.down('xs')]:{
+            paddingLeft:'0.5em',
+            paddingRight:'0.5em',
+            paddingTop:'1em',
         }
     },
     root: {
         display: 'flex',
+        boxShadow:theme.shadows[10],
+        borderRadius:10,
+        // padding:'1em'
+        
+    },
+    cartCard: {
+        display: 'flex',
+        boxShadow:theme.shadows[5],
+        borderRadius:5,
+        // padding:'1em'
+        
     },
     details: {
         display: 'flex',
@@ -40,9 +54,10 @@ const useStyles = makeStyles(theme=>({
     },
     content: {
         flex: '1 0 auto',
+        paddingRight:'1em'
     },
     cover: {
-        width: 151,
+        width:151,
         marginLeft:'auto'
     },
     controls: {
@@ -50,6 +65,7 @@ const useStyles = makeStyles(theme=>({
         alignItems: 'center',
         paddingLeft: theme.spacing(1),
         paddingBottom: theme.spacing(1),
+        marginTop:'2em'
     },
     playIcon: {
         height: 38,
@@ -82,26 +98,36 @@ const useStyles = makeStyles(theme=>({
         }
     },
     message:{
-        border: `2px solid ${theme.palette.common.black}`,
+        border: `2px solid ${theme.palette.common.grey}`,
+        "&:hover": {
+                border: `2px solid ${theme.palette.common.black}`
+              },
         marginTop:'3em',
-        borderRadius:5
+        borderRadius:5,
     },
     sendButton:{
-        ...theme.typography.estimate,
-        borderRadius:50,
+        marginLeft:'2em',
         height:45,
-        width:245,
-        fontSize:'1rem',
+        width:200,
+        fontSize:'1.2rem',
         color:'white',
+        fontFamily:'16px sans-serif',
         backgroundColor:'#51CCCC',
         "&:hover":{
-            backgroundColor:'#69DADB'
+            backgroundColor:'#51CCCC',
+            color:'white'
         },
         [theme.breakpoints.down("sm")]: {
             height: 40,
             width: 225,
           }
-    }
+    },
+    divider: {
+        // Theme Color, or use css color in quote
+        background: 'black',
+        marginTop:'2em',
+        marginBottom:'2em',
+    },
     
 }))
 export default function Cart(props){
@@ -121,13 +147,6 @@ export default function Cart(props){
     const ide = user;
     const [add] = addr;
 
-
-    // state
-    const [tot, setTot] = useState(0)
-    // const [sav, setSave] = useState(0)
-    // const [docs, setDocs] = useState([]);
-    // const [quantity, setQuantity] = useState(1);
-
     const [open,setOpen] = useState(false);
     const [name,setName] = useState('');
     const [email,setEmail] = useState('');
@@ -142,20 +161,10 @@ export default function Cart(props){
     const [message,setMessage] = useState('');
 
    
-    // const [amount, setAmount] = useState()
+    useEffect(() => {
+        window.scroll(0,0);
+    })
 
-    // const [product] = React.useState({
-    //    name: "Purchase",
-    //    description: dataCart
-    // });
-    // // useeffest
-    // useEffect(() => {
-    //    console.log({dataCart})
-    //   tote()
-
-    // }, [tot])
-
-    // delete
     const deleteItem = async(id, e) => {
         await database.collection('users')
         .doc(ide)
@@ -234,19 +243,6 @@ export default function Cart(props){
         )
     }
     
-    // total
-    // function tote() {
-    //     database.collection('users').doc(ide).collection('cart').onSnapshot((a) => {
-    //         let total =0;
-    //         let save =0;
-    //         a.forEach((item) => {
-    //             total = total + Number(item.data().price)
-    //             save = save + Number(item.data().oldPrice - item.data().price)
-    //         })
-    //         setSave(save)
-    //         setTot(total)
-    //     })
-    // }
     
     const onChange = event => {
         let valid;
@@ -303,11 +299,34 @@ export default function Cart(props){
 
       if (dataCart.length === 0 )
       return (
-          <div>
-          {props.user ?
+          <Grid container  direction="column"
+          alignItems="center"
+          justifyContent="center">
+              <Grid item style={{marginTop:matchesMD?'2em':'inherit'}}>
+
+         
+
+          
           <img src={`https://images.bewakoof.com/images/doodles/empty-cart-page-doodle.png`} alt="Logo" style={{ width: 150,alignContent:'center'}} />
-          : 'sign ifrst' }
-          </div>
+          </Grid>
+          <Grid item>
+        <Typography variant='h5' 
+        style={{
+            color:'#000000CC',
+            fontFamily:'18px sans-serif',
+            marginBottom:'1em',
+            textAlign:'center'
+            }}
+          >
+        Nothing in the bag
+        </Typography>
+    </Grid>
+          <ReuseItem/>
+         
+          <Grid item>
+              <img src='https://images.bewakoof.com/web/secure-payments-image.png' alt='payment' style={{width:300,marginTop:'2em'}}/>
+          </Grid>
+          </Grid>
       )
   else if (dataCart !== null)
     return(
@@ -318,31 +337,32 @@ export default function Cart(props){
             <Grid item lg={4}>
                 {/* first Item */}
                 {dataCart && dataCart.map(doc=>
-            <Card className={classes.root} style={{marginBottom:'2em'}}>
+            <Card className={classes.root} style={{marginBottom:'2em',maxWidth:matchesXS?'23em' :'30em'}}>
                 <div className={classes.details}>
                     <CardContent className={classes.content}>
-                    <Typography component="h5" variant="h5">
+                    <Typography style={{fontFamily:'sans-serif'}} variant={matchesXS?'h6':"h5"}>
                     {doc.productName}
                     </Typography>
-                    <Typography variant="subtitle1" color="textSecondary">
+                    <Typography variant="subtitle1"  style={{fontFamily:'16px sans-serif',color:'#333333',fontWeight:'bold'}} >
                     ₹{doc.price} 
-                    <OriginalPrice id="price">{doc.oldPrice}</OriginalPrice>
+                    <OriginalPrice id="price" style={{fontFamily:'sans-serif'}}>{doc.oldPrice}</OriginalPrice>
                     </Typography>
-                    <Typography variant="subtitle1" style={{color:'green'}}>
+                    <Typography variant={matchesXS?'body1':"subtitle1"}  style={{fontFamily:'sans-serif',color:'#1D8802',fontSize:matchesXS?'0.7rem':'1.1rem'}} >
                     You saved ₹{doc.oldPrice - doc.price}!
                     </Typography>
                     </CardContent>
                     <div className={classes.controls}>
-                    <IconButton onClick={()=>deleteItem(doc.key)} >
-                        <DeleteIcon/>
-                    </IconButton>
-                    <IconButton onClick={()=>addtoWish(doc)} >
+                    <Button  variant='contained' style={{color:'white',backgroundColor:'red',marginRight:'0.5em'}} onClick={()=>deleteItem(doc.key)} >
+                    <DeleteIcon/>
+                    </Button>
+                    <Button variant='contained' style={{color:'white',backgroundColor:'black'}} onClick={()=>addtoWish(doc)} >
                         <FavoriteIcon/>
-                    </IconButton>
+                    </Button>
                     </div>
                 </div>
                 <CardMedia
                     className={classes.cover}
+                    style={{maxWidth:matchesXS?'8em':'inherit'}}
                     image={doc.image}
                     title="Live from space album cover"
                 />
@@ -350,41 +370,46 @@ export default function Cart(props){
                 )
                 }
             </Grid>
-            <Grid item lg={5} sm={8} xs={7} style={{marginLeft:matchesMD ? 0 :'8em'}} alignItems='center'  >
-            <Card style={{ backgroundColor: '#F6F6F7' }}>
-                        <CardContent>
-                            <Typography style={{ backgroundColor: '#F6F6F7', color: 'black', fontFamily: "cursive", borderBottom: 'solid ' }}>
-                                Subtotal
+            <Grid item lg={5} md={5 }sm={8} xs={12}  style={{marginLeft:matchesXS?0:matchesMD ? '3em' :'8em'}} alignItems='center'  >
+            <Card className={classes.cartCard} style={{ backgroundColor: '#F6F6F7' }}>
+                        <CardContent className={classes.content}>
+                            <Typography variant='h5'
+                                style={{
+                                    backgroundColor: '#F6F6F7', 
+                                    color: '#000000', 
+                                    fontFamily: 'sans-serif', 
+                                    borderBottom: 'solid ',
+                                    fontWeight:'bold'
+                                }}>
+                                PRICE SUMMARY
                             </Typography>
                             <br />
-                            <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                                The total Price is ₹{cartTotal}
+                            <Typography variant='h6'  style={{ color: 'black', fontFamily:"sans-serif",marginBottom:'0.5em' }}>
+                                The Total Price is <span style={{fontWeight:'bold'}}> ₹ {cartTotal}</span> 
                             </Typography>
-                            <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                                    You Saved ₹{cartSave}
+                            <Typography variant='h6'  style={{ color: 'black', fontFamily:"sans-serif",marginBottom:'0.5em' }}>
+                            Delivery Fee <span style={{color:'green'}}>FREE</span>
+                            </Typography>
+                           
+                                <Typography variant={matchesXS?'subitle2':'h6'} style={{ color: 'green', fontFamily:"sans-serif" ,marginBottom:'1em'}}>
+                                You are saving ₹{cartSave} on this order
                                 </Typography>
                             <br />
-
-                            {add.length === 0 ? <Button onClick={() => setOpen(true)} style={{ backgroundColor: '#506D84' }}>
-                                            Add Address
+                            
+                            {add.length === 0 ? <Button variant='contained' onClick={() => setOpen(true)} style={{ backgroundColor: '#42A2A2',marginTop:'2em' }}>
+                                           
+                                            <Typography variant={matchesXS?'body1':'h5'} style={{color:'white'}}>
+                                                Add Address
+                                            </Typography>
                                         </Button> :
-                                            <Button component={Link} to='/Checkout' style={{ backgroundColor: 'red' }}>Go To checkout</Button>
+                                            <Button variant='contained' component={Link} to='/Checkout' style={{ backgroundColor: '#42A2A2' }}>
+                                               
+                                                <Typography style={{color:'white'}}>
+                                                Go To checkout
+                                            </Typography>
+                                            </Button>
 
                                         }
-                            {/* <Button onClick={() => setOpen(true)} style={{ backgroundColor: 'orange' }}>
-                                            Checkout
-                            </Button> */}
-                            {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
-                            token={handleToken}
-                            cartTotal={cartTotal * 100}
-                            name="Payment"
-                            // billingAddress
-                            // shippingAddress
-                        >
-                        <Button variant='contained' style={{backgroundColor:'#DA0037'}}>
-                            <Typography variant='h6' style={{color:'#EDEDED'}}>pay with card</Typography>
-                        </Button>
-                        </StripeCheckout> */}
                         </CardContent>
                     </Card>
             </Grid>
@@ -419,13 +444,17 @@ export default function Cart(props){
             <DialogContent >
                     <Grid container direction='column'>
                         <Grid item>
-                            <Typography align="left" variant="h4" style={{color:'black'}} gutterBottom>
+                            <Typography align="left" variant="h4" 
+                            style={{color:'#333333',fontFamily:'20px sans-serif'}} gutterBottom>
                                 Add Address
                             </Typography>
                         </Grid>
                         <Grid item>
-                            <Typography align="left" variant="h5" style={{color:'black',fontWeight:200}} gutterBottom>
-                               <u> Delivery Info</u>
+                            <Typography align="left" variant="h5" 
+                                style={{ color:'#181818',
+                                fontFamily:'18px sans-serif'
+                                }} gutterBottom>
+                            <u style={{textDecorationColor:'#FFD835',borderBottomStyle:'yellow'}}>Delivery Info</u>
                             </Typography>
                         </Grid>
 
@@ -461,8 +490,16 @@ export default function Cart(props){
                                 />
                             </Grid>
                             <Grid item>
-                            <Typography align="left" variant="h5" style={{marginTop:'2em',marignBottom:'2em',color:'black',fontWeight:200}} gutterBottom>
-                               <u> Address </u>
+                            <Typography align="left" variant="h5" style={{
+                                    marginTop:'2em',
+                                    marignBottom:'2em',
+                                    color:'#181818',
+                                    
+                                    fontFamily:'18px sans-serif'
+                                    }} 
+                                    gutterBottom
+                            >
+                               <u style={{textDecorationColor:'#FFD835',borderBottomStyle:'yellow'}}> Address </u>
                             </Typography>
                         </Grid>
                             <Grid item style={{marginBottom:'0.5em'}}>
@@ -533,10 +570,13 @@ export default function Cart(props){
                         >
                             <Grid item>
                                 <Button 
-                                    style={{fontWeight:300,color:'#51CCCC'}}
+                                    variant="outlined"
+                                    style={{fontWeight:300,borderColor:'#51CCCC'}}
                                     onClick={()=>setOpen(false)}
                                 >
-                                    Cancel
+                                    <Typography style={{fontFamily:'16px sans-serif',color:'#51CCCC'}}>
+                                        Cancel
+                                    </Typography>
                                 </Button>
                             </Grid>
                         <Grid item>
@@ -550,10 +590,10 @@ export default function Cart(props){
                                     phoneHelper.length !== 0 ||
                                     emailHelper.length !== 0 ||
                                     pincodeHelper.length !==0 ||
-                                    pincode ==0 ||
-                                    address == 0 ||
-                                    state == 0 ||
-                                    city ==0
+                                    pincode ===0 ||
+                                    address === 0 ||
+                                    state === 0 ||
+                                    city ===0
                                     }
                                 variant='contained' 
                                 className={classes.sendButton}
@@ -571,3 +611,4 @@ export default function Cart(props){
             </div>
     )
 }
+

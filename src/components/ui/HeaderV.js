@@ -11,6 +11,7 @@ import { auth } from '../../firebase'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,7 @@ menuItem: {
 
 export default function HeaderV(props) {
   const classes = useStyles();
+  const history = useHistory()
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
 
@@ -111,12 +113,22 @@ export default function HeaderV(props) {
                         <span >{props.user.displayName}</span>
                         </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleClose} className={classes.menuItem}>My Account</MenuItem>
+                    <Link exact to='/myaccount' style={{color:'white'}}>
+                    <MenuItem 
+                        onClick={handleClose} className={classes.menuItem}>My Account</MenuItem>
+                    </Link>
+                    <Link exact to='/whistlist' style={{color:'white'}}>
                     <MenuItem onClick={handleClose} className={classes.menuItem}>My Wishlist</MenuItem>
+                    </Link>
+                   
+                   
+                    
+                    <Link exact to='/myorders' style={{color:'white'}}>
                     <MenuItem onClick={handleClose} className={classes.menuItem}>My Orders</MenuItem>
-                    <MenuItem component={Link} to='/account'onClick={handleClose} className={classes.menuItem}>My Wallet</MenuItem>
+                    </Link>
                     <MenuItem onClick={() => {
-                    auth.signOut()                  
+                    auth.signOut() 
+                    history.push('/')                
                 }} className={classes.menuItem}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>

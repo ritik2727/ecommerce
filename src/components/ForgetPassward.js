@@ -40,6 +40,7 @@ export default function ForgotPassword() {
   return (
     <>
       <Card style={{marginLeft:matchesXS?'1em':matchesSM?'5em':matchesMD?'10em':'25em',
+      marginTop:'5em',
                 marginRight:matchesXS?'1em':matchesSM?'5em':matchesMD?'10em':'25em'}}>
         <Card.Body>
           <h2 className="text-center mb-4">Password Reset</h2>
@@ -50,17 +51,17 @@ export default function ForgotPassword() {
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
             </Form.Group>
-            <Button disabled={loading} style={{marginTop:'1em'}} className="w-100" type="submit">
+            <Button disabled={loading} style={{marginTop:'1em',backgroundColor:'#42A2A2'}} className="w-100" type="submit">
               Reset Password
             </Button>
           </Form>
           <div className="w-100 text-center mt-3">
-            <Link to="/login">Login</Link>
+            <Link to="/login" style={{color:'#42A2A2'}}>Login</Link>
           </div>
         </Card.Body>
       </Card>
-      <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/register">Sign Up</Link>
+      <div className="w-100 text-center mt-2"  style={{ marginBottom:'13em',}}>
+        Need an account? <Link to="/register" style={{color:'#42A2A2'}}>Sign Up</Link>
       </div>
     </>
   )

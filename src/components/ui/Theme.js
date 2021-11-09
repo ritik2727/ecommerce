@@ -4,7 +4,7 @@ const arcBlue = '#0B72B9';
 const arcOrange = '#FFBA60';
 const arcGrey ='#DDDDDD'
 const arcWhite ='#F7F6F2'
-const arcBlack = '#000000'
+const arcBlack = '#181818'
 export default createTheme({
   palette: {
     common: {
@@ -15,7 +15,7 @@ export default createTheme({
       black:arcBlack
     },
     primary: {
-      main: arcBlue
+      main: arcBlack
     },
     secondary: {
       main: arcOrange
@@ -23,7 +23,7 @@ export default createTheme({
   },
   typography:{
       tab:{
-        fontFamily:'Raleway',
+        fontFamily:'sans-serif',
         textTransform:'none',
         fontWeight:700,
         fontSize:'1rem',
@@ -36,31 +36,31 @@ export default createTheme({
         color:'white'
       },
       h2:{
-        fontFamily:'Raleway',
+        fontFamily:'sans-serif',
         fontWeight:700,
         fontSize:'2.5rem',
-        color:arcBlue,
+        color:arcBlack,
         lineHeight:1.5
       },
       h3: {
-        fontFamily: "Pacifico",
+        fontFamily:'sans-serif',
         fontSize: "2.5rem",
-        color: arcBlue
+        color: arcBlack
       },
       h4:{
-        fontFamily:'Raleway',
+        fontFamily:'sans-serif',
         fontSize:'1.75rem',
-        color:arcBlue,
+        color:arcBlack,
         fontWeight:700
       },
       h6: {
         fontWeight: 500,
-        fontFamily: "Raleway",
-        color: arcBlue,
+        fontFamily:'sans-serif',
+        color: arcBlack,
         lineHeight:1
       },
       subtitle1:{
-        fontSize:'1.25rem',
+        fontFamily:'sans-serif',
         fontWeight:300,
         color:arcGrey
       },
@@ -93,7 +93,9 @@ export default createTheme({
     MuiInputLabel:{
       root:{
         color:arcBlack,
-        fontSize:'1rem'
+        fontSize:'1.3rem',
+        fontFamily:'sans-serif',
+        opacity:'40%'
       }
     },
     MuiInput:{
@@ -103,7 +105,8 @@ export default createTheme({
       },
       underline: {
         "&:before": {
-          borderBottom: `2px solid ${arcBlack}`
+          borderBottom: `2px solid ${arcBlack}`,
+          opacity:'30%'
         },
         "&:hover:not($disabled):not($focused):not($error):before": {
           borderBottom: `2px solid ${arcBlack}`

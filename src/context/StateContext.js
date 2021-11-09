@@ -9,12 +9,15 @@ export const StateProvider = (props) => {
    const [cartSave, setcartSave] = useState()
    const [wishTotal, setWishTotal] = useState()
    const [wishSave, setWishSave] = useState()
+   const [orderTotal, setOrderTotal] = useState()
+   const [orderSave, setOrderSave] = useState()
    const [dataMens, setDataMens] = useState([])
    const [dataWomens, setDataWomens] = useState([])
    const [dataMobile, setDataMobile] = useState([])
    const [dataCart, setDataCart] = useState([])
    const [dataWishlist, setDataWishlist] = useState([])
    const [add, setAdd] = useState([])
+   const [dataOrder, setDataOrder] = useState([])
 
 
    useEffect(() => {
@@ -63,6 +66,14 @@ export const StateProvider = (props) => {
             setDataCart(fdata)
          })
 
+         database.collection('users').doc(user).collection('order').onSnapshot((a) => {
+            const odata = [];
+            a.forEach((item) => {
+               odata.push({ ...item.data(), key: item.id })
+            })
+            setDataOrder(odata)
+         })
+
          //Wishlist Data from Firebase
          database.collection('users').doc(user).collection("wish").onSnapshot((querySnapshot) => {
             const getWishDataFromFirebase = [];
@@ -82,6 +93,18 @@ export const StateProvider = (props) => {
             setcartSave(save)
             setcartTotal(total)
          })
+
+         database.collection('users').doc(user).collection('order').onSnapshot((a) => {
+            let total = 0;
+            let save = 0;
+            a.forEach((item) => {
+               total = total + Number(item.data().price)
+               save = save + Number(item.data().oldPrice - item.data().price)
+            })
+            setOrderSave(save)
+            setOrderTotal(total)
+         })
+
          database.collection('users').doc(user).collection('wish').onSnapshot((a) => {
             let total = 0;
             let save = 0;
@@ -124,7 +147,10 @@ export const StateProvider = (props) => {
             carttotal: [cartTotal, setcartTotal],
             wishsave: [wishSave, setWishSave],
             wishtotal: [wishTotal, setWishTotal],
-            addr:[add,setAdd]
+            addr:[add,setAdd],
+            oder: [dataOrder, setDataOrder],
+            ototal: [orderTotal, setOrderTotal],
+            osave: [orderSave, setOrderSave]
          }
          }
       >

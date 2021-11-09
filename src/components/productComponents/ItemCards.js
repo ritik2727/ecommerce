@@ -1,8 +1,7 @@
-import {  Card, CardContent, CardMedia, makeStyles,Typography } from '@material-ui/core';
+import {  Card, CardContent, CardMedia, makeStyles,Typography,Button } from '@material-ui/core';
 import React, { useEffect,useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import LocalMallIcon from '@material-ui/icons/LocalMall';
 import styled from "styled-components";
 import { auth, database } from '../../firebase';
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,24 +9,26 @@ import 'react-toastify/dist/ReactToastify.css';
 import {  LocalMall} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme=>({
-    root: {
-        width:'15rem',
-        height:'25rem',
-      },
-    media: {
-        height: '19rem',
-        width:'15rem',
-        position:'absolute',
-        // paddingTop: '56.25%', // 16:9
-      },
       rootV: {
         width: '15em',
+        boxShadow:theme.shadows[10],
+        borderRadius:10,
       },
       mediaV: {
         height: "19em",
         width:'15em',
-      }
-
+      },
+    details: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    content: {
+        flex: '1 0 auto',
+    },
+    cover: {
+        width: 151,
+        marginLeft: 'auto'
+    },
 }));
 
 export default function ItemCards({id,productName,image,price,oldPrice},props){
@@ -117,19 +118,6 @@ export default function ItemCards({id,productName,image,price,oldPrice},props){
         }
 
     }
-
-  //   const addToWish = () => {
-  //   if(user){
-  //     database.collection("users").doc(user.uid).collection("wish").add({
-  //       productName:productName,
-  //       image:image,
-  //       price:price,
-  //       oldPrice:oldPrice
-  //     }).then(()=>{console.log('Item add to wish')})
-  //   }else{
-  //     toast.warn("Please Login First")
-  //   }
-  // }
   const addToWish = () => {
     let q = wishData.filter(a => a.productName === productName)
     if (user) {
@@ -184,54 +172,30 @@ export default function ItemCards({id,productName,image,price,oldPrice},props){
       <CardMedia
         className={classes.mediaV}
         image={image}
-        title="Paella dish"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-        Bewakoof
-        <IconButton>
+        title={productName}
+      >
+          <IconButton>
            <FavoriteIcon onClick={()=>{addToWish()}} />
            </IconButton>
-           <IconButton>
-                <LocalMallIcon  onClick={()=>{addToCart()}} />
-            </IconButton>
-        </Typography>
+     </CardMedia>
+      <CardContent>
+        {/* <Typography gutterBottom variant="h5" component="h2">
+        Bewakoof
+        </Typography> */}
         <ToastContainer/>
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography variant="h6" style={{color:'2D2D2D',fontFamily:'12px sans-serif'}} component="p">
         {productName}
         </Typography>
         <Typography variant="body1" style={{color:'black'}} component="p">
         ₹{price} <OriginalPrice id="price">{oldPrice}</OriginalPrice>
         </Typography>
       </CardContent>
+      <Button onClick={()=>{addToCart()}} variant='outlined' style={{color:'grey',width:'17.2em',padding:'0.4em'}}>
+        <Typography variant='h6' style={{color:'#333333'}}>
+            ADD TO BAG  
+        </Typography>
+    </Button>
     </Card>
     </div>
     )
 }
-
-//  <Card className={classes.root}>
-// <CardActionArea>
-// <CardMedia>
-//  <img src='https://images.bewakoof.com/t540/bwkf-skateboard-men-s-printed-t-shirts-men-s-printed-t-shirts-315076-1608818262.jpg'
-//   alt='cplusplus' className={classes.media} />
-//  </CardMedia>
-// </CardActionArea>
-// <CardActions disableSpacing>
-
-// </CardActions> 
-// <CardContent style={{marginTop:'19em'}}>
-//     <Typography variant='body1'  style={{color:'black',fontSize:'1rem'}}>
-//          blue shirt
-//          <IconButton style={{marginLeft:'1em'}}>
-// <FavoriteIcon />
-// </IconButton>
-// <IconButton>
-//      <LocalMallIcon />
-//  </IconButton>
-        
-//     </Typography>
-//     <Typography variant='body1' style={{color:'black',fontSize:'1rem'}}>
-//          $200   
-//     </Typography>
-// </CardContent>
-// </Card> *

@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { database } from '../../firebase';
+import moment from 'moment';
+import { useHistory } from 'react-router';
 import styled from "styled-components";
 import { Grid, makeStyles, Typography, useTheme, useMediaQuery, Button } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
@@ -28,24 +30,36 @@ const useStyles = makeStyles(theme => ({
    },
    root: {
       display: 'flex',
-   },
-   details: {
+      boxShadow:theme.shadows[10],
+      borderRadius:10,
+      // padding:'1em'
+      
+  },
+  CheckoutCard: {
+   display: 'flex',
+   boxShadow:theme.shadows[5],
+   borderRadius:5,
+   // padding:'1em'
+   
+},
+  details: {
       display: 'flex',
       flexDirection: 'column',
-   },
-   content: {
+  },
+  content: {
       flex: '1 0 auto',
-   },
-   cover: {
-      width: 151,
-      marginLeft: 'auto'
-   },
-   controls: {
+      paddingRight:'1em'
+  },
+  cover: {
+      width:151,
+      marginLeft:'auto'
+  },
+  controls: {
       display: 'flex',
       alignItems: 'center',
       paddingLeft: theme.spacing(1),
       paddingBottom: theme.spacing(1),
-   },
+  },
    playIcon: {
       height: 38,
       width: 38,
@@ -101,11 +115,11 @@ const useStyles = makeStyles(theme => ({
 export default function Checkout() {
    const classes = useStyles();
    const theme = useTheme();
-
+   const history = useHistory()
 
    const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
    const matchesMD = useMediaQuery(theme.breakpoints.down('md'));
-   // const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
+   const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
 
    //Context 
    const { cart, userdata, cartsave, carttotal } = useContext(StateContext);
@@ -117,56 +131,73 @@ export default function Checkout() {
    const [address, setAddress] = useState([])
    const [value, setValue] = useState()
    const ide = user;
-   const [amount, setAmount] = useState()
+   const [amount, setAmount] = useState();
 
-   const [product] = React.useState({
-      name: "Purchase",
-      description: dataCart
-   });
+   useEffect(() => {
+      window.scroll(0,0);
+  })
+
+
+   // const [product] = React.useState({
+   //    name: "Purchase",
+   //    description: dataCart
+   // });
 
    async function handleToken(token) {
       const response = await axios.post(
-         "http://localhost:5000/checkout",
+         "https://gentle-castle-44871.herokuapp.com/checkout",
          { token, amount, address }
       );
       const { status } = response.data;
       console.log("Response:", response.data);
       setcartTotal(0);
       if (status === "success") {
+         history.push('/orderconfirm');
          console.log("Success! Check email for details", { type: "success" });
+         addtoOrder();
+         deleteCart();
       } else {
          console.log("Something went wrong", { type: "error" });
       }
    }
-//      // stripe
-//      async function handleToken(token) {
-//       const response = await axios.post(
-//           "http://localhost:5000/checkout",
-//           { token, cartTotal ,address}
-//       );
-//       const { status } = response.data;
-//       console.log("Response:", response.data);
-//       // setcartTotal(0);
-//       if (status === "success") {
-//           console.log("Success! Check email for details", { type: "success" });
-          
-//       } else {
-//           console.log("Something went wrong", { type: "error" });
-//       }
-//   }
+   const addtoOrder = () => {
+      dataCart.map((item) => (
+         database.collection("users").doc(user).collection("order").add({
+            price: item.price,
+            productName: item.productName,
+            desc: item.productName,
+            image: item.image,
+            address: address,
+            oldPrice: item.oldPrice,
+            date:moment().valueOf().toString()
+         })
+      ));
 
+   }
+   const deleteCart = () => {
+      dataCart.map((item) => (
+         database.collection("users").doc(user).collection("cart").doc(item.key).delete().then((res) => { console.log(res) })
+      ))
+   }
+   const pod = () => {
+      addtoOrder();
+      deleteCart();
+   }
 
    // Address FEtch
    useEffect(() => {
+      window.scroll(0,0);
       const getAddress = [];
-      database.collection('users').doc(ide).collection('shipping').onSnapshot((querySnapshot) => {
-         querySnapshot.forEach((doc) => {
-            getAddress.push({ ...doc.data(), key: doc.id });
+      if (ide) {
+         database.collection('users').doc(ide).collection('shipping').onSnapshot((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+               getAddress.push({ ...doc.data(), key: doc.id });
+            });
+            setAddress(getAddress);
+            setAmount(cartTotal)
          });
-         setAddress(getAddress);
-         setAmount(cartTotal)
-      });
-   }, [ide])
+      }
+   }, [ide,cartTotal])
 
 
 
@@ -188,58 +219,85 @@ export default function Checkout() {
                <Grid item lg={4}>
                   {/* first Item */}
                   {dataCart && dataCart.map(doc =>
-                     <Card className={classes.root} style={{ marginBottom: '2em' }}>
-                        <div className={classes.details}>
-                           <CardContent className={classes.content}>
-                              <Typography component="h5" variant="h5">
-                                 {doc.productName}
-                              </Typography>
-                              <Typography variant="subtitle1" color="textSecondary">
-                                 ₹{doc.price}
-                                 <OriginalPrice id="price">{doc.oldPrice}</OriginalPrice>
-                              </Typography>
-                              <Typography variant="subtitle1" style={{ color: 'green' }}>
-                                 You saved ₹{doc.oldPrice - doc.price}!
-                              </Typography>
-                           </CardContent>
-
-                        </div>
-                        <CardMedia
-                           className={classes.cover}
-                           image={doc.image}
-                           title="Live from space album cover"
-                        />
-                     </Card>
+                   <Card className={classes.root} 
+                     style={{
+                        marginBottom:'2em',
+                        maxWidth:matchesXS?'23em' :'30em',
+                        height:'13em'
+                        }}
+                     >
+                   <div className={classes.details}>
+                       <CardContent className={classes.content}>
+                       <Typography style={{fontFamily:'sans-serif'}} variant={matchesXS?'h6':"h5"}>
+                       {doc.productName}
+                       </Typography>
+                       <Typography variant="subtitle1"  style={{fontFamily:'16px sans-serif',color:'#333333',fontWeight:'bold'}} >
+                       ₹{doc.price} 
+                       <OriginalPrice id="price" style={{fontFamily:'sans-serif'}}>{doc.oldPrice}</OriginalPrice>
+                       </Typography>
+                       <Typography variant={matchesXS?'body1':"subtitle1"}  style={{fontFamily:'sans-serif',color:'#1D8802',fontSize:matchesXS?'0.7rem':'1.1rem'}} >
+                       You saved ₹{doc.oldPrice - doc.price}!
+                       </Typography>
+                       </CardContent>
+                   </div>
+                   <CardMedia
+                       className={classes.cover}
+                       // style={{height:matchesXS?'10em':'inherit'}}
+                       image={doc.image}
+                       title="Live from space album cover"
+                   />
+                   </Card>
                   )
                   }
                </Grid>
-               <Grid item lg={5} sm={8} xs={7} style={{ marginLeft: matchesMD ? 0 : '8em' }} alignItems='center'  >
-                  <Card style={{ backgroundColor: '#F6F6F7' }}>
-                     <CardContent>
-                        <Typography style={{ backgroundColor: '#F6F6F7', color: 'black', fontFamily: "cursive", borderBottom: 'solid ' }}>
+               <Grid item lg={5} md={5} sm={10} xs={12}  style={{marginLeft:matchesXS?0:matchesMD ? '3em' :'8em'}} alignItems='center'  >
+                  <Card className={classes.CheckoutCard} style={{ backgroundColor: '#F6F6F7' }}>
+                     <CardContent className={classes.content}>
+                        <Typography variant='h5'
+                              style={{
+                                 backgroundColor: '#F6F6F7', 
+                                 color: '#000000', 
+                                 fontFamily: 'sans-serif', 
+                                 borderBottom: 'solid ',
+                                 fontWeight:'bold'
+                              }}>
                            Shipping Address
                         </Typography>
-                        <Typography style={{ backgroundColor: '#F6F6F7', color: 'black', fontFamily: "cursive", borderBottom: 'solid ' }}>
+                        <Typography  style={{ 
+                              backgroundColor: '#F6F6F7', 
+                              color: 'black', 
+                              fontFamily:'sans-serif',
+                               marginTop:'0.5em' ,
+                               fontSize:'1.35rem',
+                               marginBottom:'0.5em'
+                               }}
+                        >
                            {address.map(d =>
                               <div>
                                  Locality: {d.address}
                                  <br />
-                                 City:{d.city}
+                                 City:{d.city},{d.state}
                                  <br />
                                  Pincode:{d.pincode}
                               </div>
                            )}
                         </Typography>
-
-                        <Typography style={{ backgroundColor: '#F6F6F7', color: 'black', fontFamily: "cursive", borderBottom: 'solid ' }}>
-                           Subtotal
+                        <Typography variant='h5'
+                              style={{
+                                 backgroundColor: '#F6F6F7', 
+                                 color: '#000000', 
+                                 fontFamily: 'sans-serif', 
+                                 borderBottom: 'solid ',
+                                 fontWeight:'bold'
+                              }}>
+                            Subtotal
                         </Typography>
                         <br />
-                        <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                           The total Price is ₹{cartTotal}
+                        <Typography variant='h6'  style={{ color: 'black', fontFamily:"sans-serif",marginBottom:'0.5em' }}>
+                           The Total Price is <span style={{fontWeight:'bold'}}> ₹{cartTotal}</span> 
                         </Typography>
-                        <Typography style={{ color: 'black', fontFamily: "fantasy" }}>
-                           You Saved ₹{cartSave}
+                        <Typography variant={matchesXS?'subitle2':'h6'} style={{ color: 'green', fontFamily:"sans-serif" ,marginBottom:'1em'}}>
+                           You are saving ₹{cartSave} on this order
                         </Typography>
                         <br />
                         <Form>
@@ -257,10 +315,24 @@ export default function Checkout() {
                                     token={handleToken}
                                     amount={cartTotal * 100}
                                     name="Payment"
-                                 />
+                                 >
+                                 <Button variant='contained' style={{backgroundColor:'#42A2A2'}}>
+                                    <Typography variant='h6' style={{color:'#EDEDED'}}>pay with card</Typography>
+                                 </Button>
+                                 </StripeCheckout>
                               </> :
-                              <Button style={{ borderColor: 'black', backgroundColor: 'red', color: 'white', borderRadius: '4px', padding: '0px 12px', fontSize: '14px', height: '30px', fontWeight: 'bold' }}>
-                                 Confirm Order</Button>
+                              <Button
+                              style={{ borderColor: 'black',backgroundColor: '#42A2A2', color: 'white', borderRadius: '4px', padding: '0px 12px', fontSize: '14px', height: '30px', fontWeight: 'bold' }}
+                              onClick={() => {
+                                  pod() 
+                                  history.push('/orderconfirm')
+                                  }}
+                                 >
+                             
+                              <Typography variant={matchesXS?'body1':'h5'} style={{color:'white'}}>
+                                 Confirm Order
+                              </Typography>
+                              </Button>
                         }
                      </CardContent>
                   </Card>
@@ -270,14 +342,3 @@ export default function Checkout() {
       </div >
    )
 }
- {/* <StripeCheckout stripeKey='pk_test_51JOzfFSGs3WteDI290yrM0bhrCjRDXsZISCi8PVHG45isfw7CN09fsOooDB99yl042wgNGVE1G9p8a6sLo5MC1ZD00PovwK3x6'
-                            token={handleToken}
-                            cartTotal={cartTotal * 100}
-                            name="Payment"
-                            // billingAddress
-                            // shippingAddress
-                        >
-                        <Button variant='contained' style={{backgroundColor:'#DA0037'}}>
-                            <Typography variant='h6' style={{color:'#EDEDED'}}>pay with card</Typography>
-                        </Button>
-                        </StripeCheckout> */}

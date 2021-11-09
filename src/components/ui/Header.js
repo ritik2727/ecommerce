@@ -1,5 +1,5 @@
-import React, { useState ,useEffect} from 'react';
-import { AppBar, Button,IconButton,List,ListItem, Tab, Tabs, Typography} from '@material-ui/core';
+import React, { useState ,useEffect,useContext} from 'react';
+import { AppBar,Badge, Button,IconButton,List,ListItem, Tab, Tabs, Typography} from '@material-ui/core';
 import  Toolbar  from '@material-ui/core/Toolbar';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import { makeStyles } from '@material-ui/styles';
@@ -11,17 +11,13 @@ import { useMediaQuery } from '@material-ui/core';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import MenuIcon from '@material-ui/icons/Menu'
 import { ListItemText } from '@material-ui/core';
-
-
 import  SearchIcon from '@material-ui/icons/Search';
 import { InputBase } from '@material-ui/core';
-import { Favorite , ShoppingCart } from '@material-ui/icons';
+import { Favorite ,LocalMall } from '@material-ui/icons';
 import { auth } from '../../firebase'
 import { useHistory } from 'react-router';
 import HeaderV from './HeaderV';
-
-
-
+import { StateContext } from '../../context/StateContext';
 
 function ElevationScroll(props) {
     const { children} = props;
@@ -93,18 +89,6 @@ const useStyles = makeStyles(theme=>({
             backgroundColor:theme.palette.secondary.light
         }
     },
-    // menu:{
-    //     backgroundColor:theme.palette.common.blue,
-    //     color:'white',
-    //     borderRadius:'0'
-    // },
-    // menuItem:{
-    //     ...theme.typography.tab,
-    //     opacity:'0.7',
-    //     '&:hover':{
-    //         opacity:'1'
-    //     }
-    //},
     menu: {
         backgroundColor: theme.palette.common.blue,
         color: "white",
@@ -196,7 +180,6 @@ const useStyles = makeStyles(theme=>({
 }));
 
 
-
 export default function Header(props){
     const classes = useStyles();
     const theme = useTheme();
@@ -206,7 +189,11 @@ export default function Header(props){
 
     const [search, setSearch] = useState("");
     const [openDrawer,setOpenDrawer] = useState(false)
-    
+
+    const {cart,wish} =useContext(StateContext);
+    const [dataCart] =  cart;
+    const [dataWishlist] = wish;
+
     const handelSubmit = (e) => {
         e.preventDefault();
         history.push(`/search?name=${search}`);
@@ -226,12 +213,12 @@ export default function Header(props){
         {name:'Men',link:'/men',activeIndex:0},
         {name:'Women',link:'/women',activeIndex:1,}, 
         {name:'Mobile Cover',link:'/cover',activeIndex:2},
+        {name:'HOME',link:'/',activeIndex:9},
     ];
 
     const routesV = [
-        {name:'My Account',link:'/account',activeIndex:4},
-        {name:'My Order',link:'/myorder',activeIndex:5,}, 
-        {name:'My Wallet',link:'/mywallet',activeIndex:6},
+        {name:'My Account',link:'/myaccount',activeIndex:4},
+        {name:'My Order',link:'/myorders',activeIndex:5,}, 
         {name:'My Wishlist',link:'/whistlist',activeIndex:7},
         {name:'Cart',link:'/cart',activeIndex:8},
     ];
@@ -269,23 +256,13 @@ export default function Header(props){
                             key={`${route}${index}`}
                             className={classes.tab}
                             component={Link}
+                            style={{color:'black'}}
                             to={route.link}
                             label={route.name}
                         />
                 ))}
             </Tabs>
             <div className={classes.search}>
-            {/* <div className={classes.searchIcon}>
-            <SearchIcon />
-            </div>
-            <InputBase
-            placeholder="Search…"
-            classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-            }}
-            inputProps={{ 'aria-label': 'search' }}
-            /> */}
              <form onSubmit={(e) => handelSubmit(e)}>
                     <div className={classes.searchIcon}>
                         <Button>  <SearchIcon /> </Button>
@@ -301,26 +278,11 @@ export default function Header(props){
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </form>
-
-      </div>
-        {/* <Button 
-            // variant='contained' 
-            // color='secondary' 
-            // className={classes.button}
-            style={{color:"black"}}
-            component={Link} 
-            to='/login'
-            onClick={()=>props.setValue(5)}
-            user={props.user} 
-        > */}
-            
+            </div>
             {props.user ? <>
                     <HeaderV  user={props.user} />
             </>
-                : <Button
-                    // variant='contained' 
-                    // color='secondary' 
-                    // className={classes.button}
+                :<Button
                     style={{ color: "black" }}
                     component={Link}
                     to='/Login'
@@ -336,11 +298,22 @@ export default function Header(props){
                     </Typography>
                 </Button>
             }
-        <Button  component={Link} to='/whistlist' onClick={() => props.setValue(8)} >
-            <Favorite/>
+        <Button  
+            component={Link} 
+            to='/whistlist' 
+            onClick={() => props.setValue(8)} 
+        >
+            <Favorite style={{color:dataWishlist.length ? '#FF0000':'black'}}/>
         </Button>
-        <Button style={{marginRight:'10em'}}  component={Link} to='/cart' onClick={() => props.setValue(8)}>
-           <ShoppingCart />
+        <Button 
+            style={{marginRight:'10em'}}  
+            component={Link} 
+            to='/cart' 
+            onClick={() => props.setValue(8)}
+        >
+            <Badge badgeContent={dataCart.length} color="error">
+                <LocalMall style={{color:'black'}} />
+            </Badge>
         </Button>
         </React.Fragment>
 
@@ -489,11 +462,11 @@ export default function Header(props){
                         className={classes.logoContainer} 
                         component={Link} 
                         to='/'
-                        onClick={()=>props.setValue(0)}
+                        onClick={()=>props.setValue(9)}
                         disableRipple
                     >
                    <img alt='company logo' 
-                        src='https://images.bewakoof.com/logos/bewakoof-logo-og.png' 
+                        src='https://images.bewakoof.com/web/bewakoof-primary-logo-white-bg-2x-1635745564.png' 
                         className={classes.logo}
                     />
                     </Button>

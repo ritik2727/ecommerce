@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState ,useEffect} from 'react'
 import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel, makeStyles,Grid} from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import withStyles from '@material-ui/core/styles/withStyles'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {auth,database} from '../firebase'
 import { useHistory } from 'react-router';
 
@@ -10,6 +9,10 @@ const useStyles = makeStyles( theme => ({
 	main: {
 		width: 'auto',
 		display: 'block', // Fix IE 11 issue.
+		boxShadow:theme.shadows[10],
+        borderRadius:10,
+		marginTop:'6em',
+		marginBottom:'7em',
 		marginLeft: theme.spacing.unit * 3,
 		marginRight: theme.spacing.unit * 3,
 		[theme.breakpoints.up(500 + theme.spacing.unit * 3 * 2)]: {
@@ -46,7 +49,12 @@ export default function Register(props) {
 	const [password, setPassword] = useState('')
 	const [confirmPassword, setConfirmPassword] = useState('')
 
-    const history = useHistory()
+    const history = useHistory();
+
+	useEffect(() => {
+        window.scroll(0,0);
+    })
+
 
     const onSubmit = (e)=> {
         e.preventDefault();
@@ -92,7 +100,7 @@ export default function Register(props) {
 						<Input name="password" type="password" id="password" autoComplete="off" value={password} onChange={e => setPassword(e.target.value)}  />
 					</FormControl>
 					<FormControl margin="normal" required fullWidth>
-						<InputLabel htmlFor="password">Conform Password</InputLabel>
+						<InputLabel htmlFor="password">Confirm Password</InputLabel>
 						<Input name="password" type="password" id="password" autoComplete="off" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}  />
 					</FormControl>
 
@@ -100,28 +108,20 @@ export default function Register(props) {
 						type="submit"
 						fullWidth
 						variant="contained"
-						color="primary"
+						style={{backgroundColor:'#42A2A2',color:'white'}}
 						onClick={onSubmit}
 						className={classes.submit}>
-						Register
+							<Typography variant='h5' style={{textTransform:'none',}}>
+								Register
+							</Typography>
           			</Button>
 					  <Grid container justifyContent="flex-end" style={{marginTop:'1em'}}>
 						<Grid item>
-							<Link to='/login' variant="body2">
+							<Link to='/login' variant="body2" style={{color:'#42A2A2'}}>
 							Already have an account? Sign in
 							</Link>
 						</Grid>
 					</Grid>
-					{/* <Button
-						type="submit"
-						fullWidth
-						variant="contained"
-						color="secondary"
-						component={Link}
-						to="/login"
-						className={classes.submit}>
-						Go back to Login
-          			</Button> */}
 				</form>
 			</Paper>
 		</main>
