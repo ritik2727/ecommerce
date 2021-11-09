@@ -321,12 +321,25 @@ export default function Checkout() {
                                  </Button>
                                  </StripeCheckout>
                               </> :
+                           value === "Pay On Delivery"?
+                              <>
                               <Button
                               style={{ borderColor: 'black',backgroundColor: '#42A2A2', color: 'white', borderRadius: '4px', padding: '0px 12px', fontSize: '14px', height: '30px', fontWeight: 'bold' }}
                               onClick={() => {
                                   pod() 
                                   history.push('/orderconfirm')
                                   }}
+                                 >
+                             
+                              <Typography variant={matchesXS?'body1':'h5'} style={{color:'white'}}>
+                                 Confirm Order
+                              </Typography>
+                              </Button>
+                              </>:
+                              <Button
+                              disabled
+                              style={{ borderColor: 'black',backgroundColor: '#42A2A2', color: 'white', borderRadius: '4px', padding: '0px 12px', fontSize: '14px', height: '30px', fontWeight: 'bold' }}
+                     
                                  >
                              
                               <Typography variant={matchesXS?'body1':'h5'} style={{color:'white'}}>

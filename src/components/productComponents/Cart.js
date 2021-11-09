@@ -106,7 +106,6 @@ const useStyles = makeStyles(theme=>({
         borderRadius:5,
     },
     sendButton:{
-        marginLeft:'2em',
         height:45,
         width:200,
         fontSize:'1.2rem',
@@ -571,8 +570,9 @@ export default function Cart(props){
                             <Grid item>
                                 <Button 
                                     variant="outlined"
-                                    style={{fontWeight:300,borderColor:'#51CCCC'}}
+                                    style={{fontWeight:300,borderColor:'#51CCCC',marginBottom:matchesSM?'1em':0}}
                                     onClick={()=>setOpen(false)}
+                                  
                                 >
                                     <Typography style={{fontFamily:'16px sans-serif',color:'#51CCCC'}}>
                                         Cancel
@@ -598,6 +598,7 @@ export default function Cart(props){
                                 variant='contained' 
                                 className={classes.sendButton}
                                 onClick={submit}
+                                style={{ marginLeft:matchesSM?0:'2em',}}
                             >
                              Save
                             </Button>

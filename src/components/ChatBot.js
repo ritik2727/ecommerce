@@ -70,12 +70,12 @@ function Chat() {
       },
       {
          id: '9',
-         message: 'You will receive call from our customer care, shortly.Or you can email us at piyushpar7@gmail.com',
+         message: 'You will receive call from our customer care, shortly.Or you can email us at reactjsdeveloper45@gmail.com',
          trigger: '6'
       },
       {
          id: '11',
-         message: 'You will receive call from our customer care, shortly.Or you can email us at piyushpar7@gmail.com',
+         message: 'You will receive call from our customer care, shortly.Or you can email us at reactjsdeveloper45@gmail.com',
          trigger: '10',
       },
       {

@@ -315,6 +315,7 @@ const BUTTON = styled.button`
             | Made by{"  "}
             <a
               className="neon"
+              // style={{color:'black'}}
               target="_blank"
               rel="noreferrer"
               href="https://www.linkedin.com/in/ritik-jain-3b2208217/"
