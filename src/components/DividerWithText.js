@@ -1,15 +1,15 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   border: {
     borderBottom: "2px solid black",
-    opacity:'40%',
-    width: "100%"
+    opacity: "40%",
+    width: "100%",
   },
   content: {
     paddingTop: theme.spacing(0.5),
@@ -19,18 +19,18 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     fontSize: 22,
     color: "black",
-    opacity:'40%'
-  }
+    opacity: "40%",
+  },
 }));
 
 const DividerWithText = ({ children }) => {
- const classes = useStyles();
- return (
-  <div className={classes.container}>
-    <div className={classes.border} />
-    <span className={classes.content}>{children}</span>
-    <div className={classes.border} />
-  </div>
- );
+  const classes = useStyles();
+  return (
+    <div className={classes.container}>
+      <div className={classes.border} />
+      <span className={classes.content}>{children}</span>
+      <div className={classes.border} />
+    </div>
+  );
 };
 export default DividerWithText;

@@ -22,7 +22,7 @@ export default function Home() {
 
 
     return (
-        <div>
+        <div style={{marginTop:'2em'}}>
             < Container style={{ width: "100%" }}>
                 <Cursol  />
                 <div style={{marginTop:'2em'}}>
